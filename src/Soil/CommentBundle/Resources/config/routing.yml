@@ -1,0 +1,7 @@
+soil_comment_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: SoilCommentBundle:Default:index }
+
+soil_comment_push:
+    path: /comment
+    defaults: { _controller: soil_comment.controller.comment_controller:pushAction }

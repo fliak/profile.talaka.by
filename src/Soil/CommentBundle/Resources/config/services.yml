@@ -1,0 +1,20 @@
+services:
+    soil_comment.controller.comment_controller:
+        class: Soil\CommentBundle\Controller\CommentController
+        arguments:
+            - @soil_comment.service.comment
+            - @soil_comment.service.entity
+            - @soil_comment.service.author
+
+
+    soil_comment.service.comment:
+        class: Soil\CommentBundle\Service\CommentService
+        arguments: [@doctrine_mongodb, @validator]
+
+    soil_comment.service.entity:
+        class: Soil\CommentBundle\Service\EntityService
+        arguments: [@doctrine_mongodb, @validator]
+
+    soil_comment.service.author:
+        class: Soil\CommentBundle\Service\AuthorService
+        arguments: [@doctrine_mongodb, @validator]

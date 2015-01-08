@@ -1,0 +1,5 @@
+soil_comment:
+    resource: "@SoilCommentBundle/Resources/config/routing.yml"
+    prefix:   /
+
+
