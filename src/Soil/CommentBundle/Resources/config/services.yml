@@ -1,4 +1,8 @@
 services:
+    soil_comment.controller.discover_controller:
+        class:     Soil\CommentBundle\Controller\DiscoverController
+        arguments: [@soil_disover.discoverer, @templating]
+
     soil_comment.controller.comment_controller:
         class: Soil\CommentBundle\Controller\CommentController
         arguments:
@@ -10,6 +14,9 @@ services:
     soil_comment.service.comment:
         class: Soil\CommentBundle\Service\CommentService
         arguments: [@doctrine_mongodb, @validator]
+        calls:
+            - [setEntityService, [@soil_comment.service.entity]]
+            - [setAuthorService, [@soil_comment.service.author]]
 
     soil_comment.service.entity:
         class: Soil\CommentBundle\Service\EntityService
@@ -17,4 +24,6 @@ services:
 
     soil_comment.service.author:
         class: Soil\CommentBundle\Service\AuthorService
-        arguments: [@doctrine_mongodb, @validator]
+        arguments: [@doctrine_mongodb, @validator, @soil_disover.discoverer]
+
+

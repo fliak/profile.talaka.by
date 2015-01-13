@@ -22,8 +22,9 @@ use Soil\CommentBundle\Entity\Comment;
 class Entity {
 
     public function __construct()   {
-        $this->userList = new ArrayCollection();
+        $this->userList = [];
         $this->comments = new ArrayCollection();
+        $this->dirty_comments = new ArrayCollection();
         $this->commentsCount = 0;
     }
 
@@ -60,16 +61,15 @@ class Entity {
     /**
      * @var Author
      * @ODM\ReferenceOne(
-     *    targetDocument="Author"
+     *    targetDocument="Author",
+     *    simple=true
      * )
      */
     protected $lastCommentAuthor;
 
     /**
      * @var ArrayCollection
-     * @ODM\ReferenceMany(
-     *    targetDocument="Author"
-     * )
+     * @ODM\Hash
      */
     protected $userList;
 
@@ -81,6 +81,15 @@ class Entity {
      * )
      */
     protected $comments;
+
+    /**
+     * @var ArrayCollection
+     * @ODM\ReferenceMany(
+     *    targetDocument="Comment",
+     *    simple=true
+     * )
+     */
+    protected $dirty_comments;
 
     /**
      * @return int
@@ -101,6 +110,8 @@ class Entity {
 
     public function incrementCommentsCount($number = 1) {
         $this->commentsCount += $number;
+
+        return $this->commentsCount;
     }
 
     /**
@@ -185,7 +196,7 @@ class Entity {
 
 
     /**
-     * @return ArrayCollection
+     * @return array
      */
     public function getUserList()
     {
@@ -193,12 +204,59 @@ class Entity {
     }
 
     /**
-     * @param ArrayCollection $userList
+     * @param array $userList
      */
     public function setUserList($userList)
     {
         $this->userList = $userList;
     }
+
+    public function incrementUser(Author $user)  {
+        $plainId = (string)$user->getId();
+        if (array_key_exists($plainId, $this->userList))  {
+            $this->userList[$plainId]++;
+        }
+        else    {
+            $this->userList[$plainId] = 1;
+        }
+    }
+
+    public function decrementUser(Author $user) {
+        $plainId = (string)$user->getId();
+        if (array_key_exists($plainId, $this->userList))  {
+            $commentsCount = $this->userList[$plainId];
+            if ($commentsCount <= 1)   {
+                unset($this->userList[$plainId]);
+            }
+            else    {
+                $this->userList[$plainId]--;
+            }
+
+        }
+        else    {
+            //do nothing
+        }
+    }
+
+
+    public function addUser2(Author $user)  {
+        $exist = $this->userList->exists(function($key, Author $existedUser) use ($user) {
+            if ($existedUser->getAuthorURI() === $user->getAuthorURI()) {
+                return true;
+            }
+            else    {
+                return false;
+            }
+        });
+
+        if ($exist) {
+            return false; //already exist
+        }
+        else    {
+            $this->userList->add($user);
+        }
+    }
+
 
     /**
      * @return ArrayCollection
@@ -216,6 +274,29 @@ class Entity {
         $this->comments = $comments;
     }
 
+    public function removeComment($comment)    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDirtyComments()
+    {
+        return $this->dirty_comments;
+    }
+
+    /**
+     * @param ArrayCollection $dirty_comments
+     */
+    public function setDirtyComments($dirty_comments)
+    {
+        $this->dirty_comments = $dirty_comments;
+    }
+
+    public function removeDirtyComment($comment)    {
+        $this->dirty_comments->removeElement($comment);
+    }
 
 
 

@@ -69,7 +69,7 @@ doctrine_mongodb:
         default:
             server: mongodb://localhost:27017
             options: {}
-    default_database: comments.talaka.by
+    default_database: comments_talaka
     document_managers:
         default:
             auto_mapping: true

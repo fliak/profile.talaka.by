@@ -35,9 +35,28 @@ class Author {
 
     /**
      * @var string
+     * @ODM\String
+     */
+    protected $name;
+
+    /**
+     * @var string
+     * @ODM\String
+     */
+    protected $surname;
+
+
+    /**
+     * @var string
      * @ODM\String(name="author_uri")
      */
     protected $authorURI;
+
+    /**
+     * @var string
+     * @ODM\String(name="avatar_url")
+     */
+    protected $avatarURL;
 
     /**
      * @var int
@@ -48,7 +67,8 @@ class Author {
     /**
      * @var string
      * @ODM\ReferenceMany(
-     *    targetDocument="Comment"
+     *    targetDocument="Comment",
+     *    simple=true
      * )
      */
     protected $comments;
@@ -107,6 +127,13 @@ class Author {
         $this->commentsCount = $commentsCount;
     }
 
+
+    public function incrementCommentsCount($number = 1) {
+        $this->commentsCount += $number;
+
+        return $this->commentsCount;
+    }
+
     /**
      * @return string
      */
@@ -137,6 +164,54 @@ class Author {
     public function setLastCommentDate($lastCommentDate)
     {
         $this->lastCommentDate = $lastCommentDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatarURL()
+    {
+        return $this->avatarURL;
+    }
+
+    /**
+     * @param string $avatarURL
+     */
+    public function setAvatarURL($avatarURL)
+    {
+        $this->avatarURL = $avatarURL;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    /**
+     * @param string $surname
+     */
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-/**
+    /**
  * Created by PhpStorm.
  * User: fliak
  * Date: 7.1.15
@@ -21,12 +21,60 @@ use Soil\CommentBundle\Entity\Entity;
  */
 class Comment {
 
+    const COMMENT_STATUS_REMOVED = 'removed';
+    const COMMENT_STATUS_PUBLIC = 'public';
+    const COMMENT_STATUS_WAITING = 'waiting';
+    const COMMENT_STATUS_DECLINED = 'declined';
+
+    public function __construct()   {
+        $this->log = new ArrayCollection();
+    }
+
     /**
      * @var string
      *
      * @ODM\Id
      */
     protected $id;
+
+    /**
+     * @var Comment
+     * @ODM\ReferenceOne(
+     *     targetDocument="Comment",
+     *     simple=true
+     * )
+     */
+    protected $parent;
+
+
+    /**
+     * @var ArrayCollection
+     * @ODM\ReferenceMany(
+     *    targetDocument="Comment",
+     *    simple=true
+     * )
+     */
+    protected $children;
+
+    /**
+     * @var ArrayCollection
+     * @ODM\EmbedMany(
+     *    targetDocument="LogEntry"
+     * )
+     */
+    protected $log;
+
+    /**
+     * @var string
+     * @ODM\String
+     */
+    protected $status;
+
+    /**
+     * @var string
+     * @ODM\String
+     */
+    protected $instanceNumber;
 
     /**
      * Author URI
@@ -45,7 +93,6 @@ class Comment {
      * )
      */
     protected $author;
-
 
     /**
      * Commented entity URI
@@ -120,6 +167,7 @@ class Comment {
     public function setAuthor($author)
     {
         $this->author = $author;
+        $this->authorURI = $author->getAuthorURI();
     }
 
     /**
@@ -220,6 +268,98 @@ class Comment {
         $this->entityURI = $entityURI;
     }
 
+    /**
+     * @return string
+     */
+    public function getInstanceNumber()
+    {
+        return $this->instanceNumber;
+    }
 
+    /**
+     * @param string $instanceNumber
+     */
+    public function setInstanceNumber($instanceNumber)
+    {
+        $this->instanceNumber = $instanceNumber;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * @param ArrayCollection $log
+     */
+    public function setLog($log)
+    {
+        $this->log = $log;
+    }
+
+
+    public function addLogEntry(LogEntry $logEntry) {
+        $this->log->add($logEntry);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param ArrayCollection $children
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    }
+
+    public function addChildren($children)  {
+        $this->children->add($children);
+    }
+
+    public function removeChildren($children)   {
+        $this->children->remove($children);
+    }
+
+
+    /**
+     * @return Comment
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Comment $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
 
 } 

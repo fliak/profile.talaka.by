@@ -1,3 +1,7 @@
+soil_discover:
+    resource: "@SoilDiscoverBundle/Resources/config/routing.yml"
+    prefix:   /
+
 soil_comment:
     resource: "@SoilCommentBundle/Resources/config/routing.yml"
     prefix:   /

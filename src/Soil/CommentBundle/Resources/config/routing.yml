@@ -2,6 +2,46 @@ soil_comment_homepage:
     path:     /hello/{name}
     defaults: { _controller: SoilCommentBundle:Default:index }
 
+
+soil_comment_get:
+    path: /comment/{id}
+    defaults: { _controller: soil_comment.controller.comment_controller:getAction }
+    methods: [GET]
+
 soil_comment_push:
     path: /comment
     defaults: { _controller: soil_comment.controller.comment_controller:pushAction }
+    methods: [POST]
+
+soil_comment_remove:
+    path: /comment/{id}
+    defaults: { _controller: soil_comment.controller.comment_controller:removeAction }
+    methods: [DELETE]
+
+
+soil_comment_edit:
+    path: /comment/{id}
+    defaults: { _controller: soil_comment.controller.comment_controller:editAction }
+    methods: [PUT]
+
+soil_comment_public_index:
+    path: /comment/entity/{entity_uri}
+    defaults: { _controller: soil_comment.controller.comment_controller:indexAction, include_non_public: false }
+    methods: [GET]
+    requirements:
+        entity_uri: .+
+
+soil_comment_non_public_index:
+    path: /comment/all/entity/{entity_uri}
+    defaults: { _controller: soil_comment.controller.comment_controller:indexAction, include_non_public: true }
+    methods: [GET]
+    requirements:
+        entity_uri: .+
+
+
+soil_comment_discover_tool:
+    path: /discover/{entity_uri}
+    defaults: { _controller: soil_comment.controller.discover_controller:discoverAction, include_non_public: true }
+    methods: [GET]
+    requirements:
+        entity_uri: .+
