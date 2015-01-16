@@ -18,6 +18,7 @@ use Soil\CommentBundle\Service\AuthorService;
 use Soil\CommentBundle\Service\CommentService;
 use Soil\CommentBundle\Service\EntityService;
 use Soil\CommentBundle\Service\Exception;
+use Soil\DiscoverBundle\Services\Exception\DownloadException;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -161,6 +162,14 @@ class CommentController {
             return $this->answerJSON([
                 'success' => false,
                 'message' => $e->getViolationsAsArray()
+            ], 500);
+        }
+        catch (DownloadException $e)   {
+            return $this->answerJSON([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'content' => $e->getResponse()->getContent()
             ], 500);
         }
         catch (\Exception $e)   {

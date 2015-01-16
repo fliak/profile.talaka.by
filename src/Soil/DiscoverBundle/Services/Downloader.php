@@ -38,7 +38,10 @@ class Downloader {
         if ($statusCode === 200) {
             return $response->getContent();
         }
-
-        throw new DownloadException("HTTP $statusCode");
+        else    {
+            $e = new DownloadException("HTTP $statusCode");
+            $e->setResponse($response);
+            throw new $e;
+        }
     }
 } 
