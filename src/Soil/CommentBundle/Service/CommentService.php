@@ -21,6 +21,8 @@ class CommentService {
      */
     protected $dm;
 
+    protected $errors;
+
     /**
      * @var
      */
@@ -73,13 +75,18 @@ class CommentService {
     }
 
     public function isValid($entity)    {
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
+        $this->errors = $this->validator->validate($entity);
+
+        if (count($this->errors) > 0) {
             return false;
             //FIXME: write log for debug mode
         }
 
         return true;
+    }
+
+    public function getLastValidatorViolations()    {
+        return $this->errors;
     }
 
     public function persist($entity)   {
@@ -96,12 +103,6 @@ class CommentService {
      */
     public function getById($id)  {
         return $this->getRepository()->find($id);
-    }
-
-    public function getByURI($uri)  {
-        return $this->getRepository()->findOneBy([
-            'comment_uri' => $uri
-        ]);
     }
 
     public function getRepository()  {
@@ -171,7 +172,7 @@ class CommentService {
         return $query;
     }
 
-    public function getQueryListByIds($ids, $onlyPublic = true, $hydrate = false)  {
+    public function getQueryListByIds($ids, $onlyPublic = true, $onlyFirstLine = false, $hydrate = false)  {
         $query = $this->getQueryBuilder()
             ->field('_id')->in($ids);
 
@@ -183,6 +184,10 @@ class CommentService {
                 Comment::COMMENT_STATUS_PUBLIC,
                 Comment::COMMENT_STATUS_WAITING
             ]);
+        }
+
+        if ($onlyFirstLine) {
+            $query->field('parent')->equals(null);
         }
 
 
@@ -199,27 +204,30 @@ class CommentService {
         $childSet = [];
         if ($children)  {
             foreach ($children as $child)   {
-                $childSet[] = $child->getId();
+                $childSet[] = $this->getPublicRepresentation($child);
             }
         }
 
+        $authorEntity = $comment->getAuthor();
         $author = [
             'author_uri' => $comment->getAuthorURI(),
-            'avatar' => $comment->getAuthor() ? $comment->getAuthor()->getAvatarURL() : null
+            'avatar' => $authorEntity ? $authorEntity->getAvatarURL() : null,
+            'name'   => $authorEntity ? $authorEntity->getName() : null,
+            'surname'   => $authorEntity ? $authorEntity->getSurname() : null,
         ];
 
 
         return [
-            'id' => $comment->getId(),
-            'author_uri' => $comment->getAuthorURI(),
-            'author' => $author,
-            'entity_uri' => $comment->getEntityURI(),
+            'id'               => $comment->getId(),
+            'author_uri'       => $comment->getAuthorURI(),
+            'author'           => $author,
+            'entity_uri'       => $comment->getEntityURI(),
             'entity_namespace' => $comment->getEntityNamespace(),
-            'status' => $comment->getStatus(),
-            'timestamp' => $comment->getCreationDate()->getTimestamp(),
-            'comment_body' => $comment->getCommentBody(),
-            'parent' => $comment->getParent() ? $comment->getParent()->getId() : null,
-            'children' => $childSet
+            'status'           => $comment->getStatus(),
+            'timestamp'        => $comment->getCreationDate()->getTimestamp(),
+            'message'          => $comment->getMessage(),
+            'parent'           => $comment->getParent() ? $comment->getParent()->getId() : null,
+            'children'         => $childSet
         ];
 
 

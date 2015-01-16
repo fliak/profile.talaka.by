@@ -28,6 +28,7 @@ class Comment {
 
     public function __construct()   {
         $this->log = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -45,6 +46,12 @@ class Comment {
      * )
      */
     protected $parent;
+
+    /**
+     * @var string
+     * @ODM\String(name="parent_uri")
+     */
+    protected $parentURI;
 
 
     /**
@@ -115,7 +122,6 @@ class Comment {
     /**
      * Entity type
      * @var string
-     * @Assert\NotBlank()
      * @ODM\String(name="entity_namespace")
      */
     protected $entityNamespace;
@@ -124,9 +130,9 @@ class Comment {
      * Comment text
      * @var string
      * @Assert\NotBlank()
-     * @ODM\String(name="comment_body")
+     * @ODM\String(name="message")
      */
-    protected $commentBody;
+    protected $message;
 
 
     /**
@@ -189,17 +195,17 @@ class Comment {
     /**
      * @return string
      */
-    public function getCommentBody()
+    public function getMessage()
     {
-        return $this->commentBody;
+        return $this->message;
     }
 
     /**
-     * @param string $commentBody
+     * @param string $message
      */
-    public function setCommentBody($commentBody)
+    public function setMessage($message)
     {
-        $this->commentBody = $commentBody;
+        $this->message = $message;
     }
 
     /**
@@ -361,5 +367,23 @@ class Comment {
     {
         $this->parent = $parent;
     }
+
+    /**
+     * @return string
+     */
+    public function getParentURI()
+    {
+        return $this->parentURI;
+    }
+
+    /**
+     * @param string $parentURI
+     */
+    public function setParentURI($parentURI)
+    {
+        $this->parentURI = $parentURI;
+    }
+
+
 
 } 

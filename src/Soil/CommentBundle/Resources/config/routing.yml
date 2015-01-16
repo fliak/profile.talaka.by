@@ -11,7 +11,7 @@ soil_comment_get:
 soil_comment_push:
     path: /comment
     defaults: { _controller: soil_comment.controller.comment_controller:pushAction }
-    methods: [POST]
+    methods: [POST, OPTIONS]
 
 soil_comment_remove:
     path: /comment/{id}
@@ -45,3 +45,8 @@ soil_comment_discover_tool:
     methods: [GET]
     requirements:
         entity_uri: .+
+
+#soil_comment_cors:
+#    path: *
+#    defaults: { _controller: soil_comment.controller.cors_controller:optionsAction, include_non_public: true }
+#    methods: [OPTIONS]

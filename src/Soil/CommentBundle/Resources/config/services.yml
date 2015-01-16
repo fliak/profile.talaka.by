@@ -1,4 +1,7 @@
 services:
+    soil_comment.controller.cors_controller:
+        class:     Soil\CommentBundle\Controller\CORSController
+
     soil_comment.controller.discover_controller:
         class:     Soil\CommentBundle\Controller\DiscoverController
         arguments: [@soil_disover.discoverer, @templating]
@@ -9,6 +12,9 @@ services:
             - @soil_comment.service.comment
             - @soil_comment.service.entity
             - @soil_comment.service.author
+        calls:
+            - [setCorsController, [@soil_comment.controller.cors_controller]]
+            - [setFormFactory, [@form.factory]]
 
 
     soil_comment.service.comment:
@@ -26,4 +32,8 @@ services:
         class: Soil\CommentBundle\Service\AuthorService
         arguments: [@doctrine_mongodb, @validator, @soil_disover.discoverer]
 
+    soil_comment.form.comment_push:
+            class: Soil\CommentBundle\Form\CommentPushForm
+            tags:
+                - { name: form.type, alias: CommentPush }
 
