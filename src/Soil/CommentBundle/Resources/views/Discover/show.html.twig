@@ -1,0 +1,75 @@
+<style>
+    .raw-data   {
+        margin-top: 40px;
+    }
+    .raw-data pre   {
+        padding: 15px;
+        border: solid thin blue;
+    }
+
+    table   {
+        border-collapse: collapse;
+    }
+
+    table td, table th  {
+        border: solid thin green;
+        padding: 5px;
+    }
+
+    .entity-image   {
+        padding: 5px;
+    }
+
+</style>
+<h2>Extracted Data for {{ discoverer.getURI() }}:</h2>
+
+<div class="entity-image">
+    <img src="{{ discoverer.getImage() }}" />
+</div>
+
+
+<table>
+    <tr>
+        <th>
+            Field Name
+        </th>
+        <th>
+            Value
+        </th>
+    </tr>
+    {% for prop, value in discoverer.getMetaData() %}
+    <tr>
+        <td>{{ prop }}</td>
+        <td>
+        {% if value is iterable %}
+            <dl>
+            {% for prop2, value2 in value %}
+                <dt>{{prop2}}</dt>
+                <dd>
+                {% if value is iterable %}
+                    {{value2 | keys | join (',')}} -
+                    {{value2 | join(',') }}
+                {% else %}
+                    {{ value2 }}
+                {% endif %}
+                </dd>
+            {% endfor %}
+            </dl>
+        {% else %}
+            {{ value }}
+        {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+<div class="raw-data">
+    <h2>What is actually shown:</h2>
+    <pre>
+        {{ discoverer.getContent() }}
+    </pre>
+
+</div>
+

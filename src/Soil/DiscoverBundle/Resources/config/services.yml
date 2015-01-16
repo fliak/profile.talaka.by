@@ -1,0 +1,18 @@
+services:
+    soil_discover.downloader:
+        class: Soil\DiscoverBundle\Services\Downloader
+        arguments: [@buzz]
+
+    soil_discover.parser:
+        class: Soil\DiscoverBundle\Services\Parser
+        arguments: [@soil_discower.dom_crawler]
+
+    soil_discower.dom_crawler:
+        class: Symfony\Component\DomCrawler\Crawler
+
+    soil_disover.discoverer:
+        class: Soil\DiscoverBundle\Services\Discoverer
+        arguments: [@soil_discover.downloader, @euskadi31_opengraph.reader]
+
+    euskadi31_opengraph.reader:
+        class: Opengraph\Reader
