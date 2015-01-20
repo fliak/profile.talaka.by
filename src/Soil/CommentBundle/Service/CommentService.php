@@ -227,7 +227,11 @@ class CommentService {
             'timestamp'        => $comment->getCreationDate()->getTimestamp(),
             'message'          => $comment->getMessage(),
             'parent'           => $comment->getParent() ? $comment->getParent()->getId() : null,
-            'children'         => $childSet
+            'children'         => $childSet,
+            'votePositive'     => $comment->getVotes()->getVotesPositive(),
+            'voteNegative'     => $comment->getVotes()->getVotesNegative(),
+            'canVote'          => $comment->getVotes()->userCanVote($comment->getAuthor())
+
         ];
 
 

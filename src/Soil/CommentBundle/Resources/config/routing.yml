@@ -50,3 +50,8 @@ soil_comment_discover_tool:
 #    path: *
 #    defaults: { _controller: soil_comment.controller.cors_controller:optionsAction, include_non_public: true }
 #    methods: [OPTIONS]
+
+soil_comment_vote:
+    path: /comment/vote
+    defaults: { _controller: soil_comment.controller.vote_controller:voteAction, include_non_public: true }
+    methods: [POST, OPTIONS]

@@ -29,6 +29,7 @@ class Comment {
     public function __construct()   {
         $this->log = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->votes = new Votes();
     }
 
     /**
@@ -37,6 +38,15 @@ class Comment {
      * @ODM\Id
      */
     protected $id;
+
+    /**
+     * @var Votes
+     * @ODM\EmbedOne(
+     *    targetDocument="Votes"
+     * )
+     */
+    protected $votes;
+
 
     /**
      * @var Comment
@@ -384,6 +394,29 @@ class Comment {
         $this->parentURI = $parentURI;
     }
 
+    /**
+     * @return Votes
+     */
+    public function getVotes()
+    {
+        if (!$this->votes)  {
+            $this->votes = new Votes(); //for old comments
+        }
+
+        return $this->votes;
+    }
+
+    /**
+     * @param Votes $votes
+     */
+    public function setVotes($votes)
+    {
+        $this->votes = $votes;
+    }
 
 
-} 
+
+}
+
+
+

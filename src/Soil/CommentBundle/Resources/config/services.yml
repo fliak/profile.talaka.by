@@ -17,6 +17,7 @@ services:
             - [setFormFactory, [@form.factory]]
 
 
+
     soil_comment.service.comment:
         class: Soil\CommentBundle\Service\CommentService
         arguments: [@doctrine_mongodb, @validator]
@@ -37,3 +38,13 @@ services:
             tags:
                 - { name: form.type, alias: CommentPush }
 
+
+
+    soil_comment.controller.vote_controller:
+        class: Soil\CommentBundle\Controller\VoteController
+        arguments:
+            - @soil_comment.service.comment
+            - @soil_comment.service.entity
+            - @soil_comment.service.author
+        calls:
+            - [setCorsController, [@soil_comment.controller.cors_controller]]

@@ -10,8 +10,7 @@ namespace Soil\CommentBundle\Controller;
 
 
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
-use Doctrine\ODM\MongoDB\Tests\HydratorTest;
-use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
+use Soil\CommentBundle\Controller\CORS\CORSTraitForController;
 use Soil\CommentBundle\Controller\Exception\IsNotValidException;
 use Soil\CommentBundle\Entity\Comment;
 use Soil\CommentBundle\Service\AuthorService;
@@ -26,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CommentController {
+
+    use CORSTraitForController;
 
     /**
      * @var CommentService
@@ -42,19 +43,11 @@ class CommentController {
      */
     protected $entityService;
 
-    /**
-     * @var CORSController
-     */
-    protected $corsController;
 
     /**
      * @var FormFactory
      */
     protected $formFactory;
-
-    public function setCorsController(CORSController $controller)   {
-        $this->corsController = $controller;
-    }
 
     public function setFormFactory(FormFactory $formFactory)    {
         $this->formFactory = $formFactory;

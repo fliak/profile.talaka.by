@@ -41,7 +41,7 @@ class Downloader {
         else    {
             $e = new DownloadException("HTTP $statusCode");
             $e->setResponse($response);
-            throw new $e;
+            throw $e;
         }
     }
 } 
