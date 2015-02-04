@@ -86,3 +86,35 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+
+soil_event:
+    ontology_config:
+        ontology_uri: %soil_event_ontology_uri%
+        ontology_abbr: "tal"
+        event_classification:
+            - { name: "CREATE", value: "CreateEvent" }
+            - { name: "REMOVE", value: "RemoveEvent" }
+            - { name: "CLAIM", value: "ClaimEvent" }
+            - { name: "DECLINE", value: "DeclineEvent" }
+            - { name: "SUBSCRIBE", value: "SubscribeEvent" }
+            - { name: "COMPLETE", value: "CompleteEvent" }
+            - { name: "COMMENT", value: "CommentEvent" }
+
+
+    carrier_config:
+        output_rdf_format: ntriples
+        queue_stream_name: talaka_event
+        carrier_service: soil_event.service.gearman_client
+
+    gearman:
+        serverIP: %soil_event_gearman_ip%
+        serverPort: %soil_event_gearman_port%
+
+    urinator_service: soil_comment.service.urinator
+
+
+parameters:
+    soil_event_ontology_uri: http://semantic.talaka.by.local/ns/talaka.owl#
+    soil_event_gearman_ip: 127.0.0.1
+    soil_event_gearman_port: 4730

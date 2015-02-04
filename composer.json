@@ -2,6 +2,7 @@
     "name": "symfony/framework-standard-edition",
     "license": "MIT",
     "type": "project",
+    "minimum-stability": "dev",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
         "psr-0": { "": "src/", "SymfonyStandard": "app/" }
@@ -22,7 +23,9 @@
         "doctrine/mongodb-odm-bundle": "3.0.*@dev",
         "sensio/buzz-bundle": "1.0.*@dev",
         "symfony/dom-crawler": "3.0.*@dev",
-        "euskadi31/opengraph": "dev-master"
+        "euskadi31/opengraph": "dev-master",
+        "soil/event-bundle": "dev-master",
+        "easyrdf/easyrdf": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

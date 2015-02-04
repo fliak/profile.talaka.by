@@ -20,7 +20,8 @@ class AppKernel extends Kernel
             new ApiBundle\ApiBundle(),
             new Soil\CommentBundle\SoilCommentBundle(),
             new Soil\DiscoverBundle\SoilDiscoverBundle(),
-            new \Sensio\Bundle\BuzzBundle\SensioBuzzBundle()
+            new \Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
+            new \Soil\EventBundle\SoilEventBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -33,6 +33,10 @@ services:
         class: Soil\CommentBundle\Service\AuthorService
         arguments: [@doctrine_mongodb, @validator, @soil_disover.discoverer]
 
+    soil_comment.service.urinator:
+        class: Soil\CommentBundle\Service\URInator
+        arguments: [@router]
+
     soil_comment.form.comment_push:
             class: Soil\CommentBundle\Form\CommentPushForm
             tags:
