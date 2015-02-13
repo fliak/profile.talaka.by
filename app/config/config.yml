@@ -115,6 +115,15 @@ soil_event:
 
 
 parameters:
-    soil_event_ontology_uri: http://semantic.talaka.by.local/ns/talaka.owl#
+    soil_event_ontology_uri: http://semantic.talaka.by/ns/talaka.owl#
     soil_event_gearman_ip: 127.0.0.1
     soil_event_gearman_port: 4730
+
+
+monolog:
+    channels: ["endpoint"]
+    handlers:
+        endpoint:
+            type:     stream
+            path:     "%kernel.root_dir%/logs/endpoint.log"
+            channels: [endpoint]

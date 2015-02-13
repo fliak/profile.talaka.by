@@ -18,6 +18,8 @@ use Soil\CommentBundle\Service\CommentService;
 use Soil\CommentBundle\Service\EntityService;
 use Soil\CommentBundle\Service\Exception;
 use Soil\DiscoverBundle\Services\Exception\DownloadException;
+use Soilby\EventComponent\Service\EventLogger;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +44,18 @@ class CommentController {
      * @var EntityService
      */
     protected $entityService;
+
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var EventLogger
+     */
+    protected $eventLogger;
+
 
 
     /**
@@ -143,6 +157,13 @@ class CommentController {
             $this->commentService->persist($comment);
 
             $this->commentService->getDM()->flush();
+
+            $this->eventLogger->raiseComment(
+                $comment,
+                $commentAuthor->getAuthorURI(),
+                $commentedEntity->getEntityURI()
+            );
+            $this->eventLogger->flush();
 
             return $this->answerJSON([
                 'success' => true,
@@ -318,5 +339,24 @@ class CommentController {
             return $response;
         }
     }
+
+    /**
+     * @param Logger $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param EventLogger $eventLogger
+     */
+    public function setEventLogger($eventLogger)
+    {
+        $this->eventLogger = $eventLogger;
+    }
+
+
+
 
 } 
