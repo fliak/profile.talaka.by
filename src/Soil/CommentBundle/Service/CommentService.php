@@ -237,4 +237,25 @@ class CommentService {
 
     }
 
+    public function getCommentStatusSchemaCompatible($comment)  {
+        switch ($comment->getStatus())  {
+            case Comment::COMMENT_STATUS_WAITING:
+                return 'schema:EventPostponed';
+
+            case Comment::COMMENT_STATUS_REMOVED:
+                return 'schema:EventCancelled';
+
+            case Comment::COMMENT_STATUS_DECLINED:
+                return 'schema:EventRescheduled';
+
+            case Comment::COMMENT_STATUS_PUBLIC:
+                return 'schema:EventScheduled';
+
+
+
+
+        }
+
+    }
+
 }

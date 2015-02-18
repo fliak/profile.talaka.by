@@ -16,6 +16,7 @@ services:
             - [setCorsController, [@soil_comment.controller.cors_controller]]
             - [setFormFactory, [@form.factory]]
             - [setEventLogger, [@soil_event.service.event_logger]]
+            - [setURInator, [@soil_comment.service.urinator]]
             - [setLogger, [@monolog.logger.endpoint]]
 
 

@@ -10,13 +10,18 @@ namespace Soil\CommentBundle\Controller;
 
 
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
+use EasyRdf\Graph;
+use EasyRdf\Literal;
+use EasyRdf\RdfNamespace;
 use Soil\CommentBundle\Controller\CORS\CORSTraitForController;
 use Soil\CommentBundle\Controller\Exception\IsNotValidException;
 use Soil\CommentBundle\Entity\Comment;
+use Soil\CommentBundle\Response\RdfResponse;
 use Soil\CommentBundle\Service\AuthorService;
 use Soil\CommentBundle\Service\CommentService;
 use Soil\CommentBundle\Service\EntityService;
 use Soil\CommentBundle\Service\Exception;
+use Soil\CommentBundle\Service\URInator;
 use Soil\DiscoverBundle\Services\Exception\DownloadException;
 use Soilby\EventComponent\Service\EventLogger;
 use Symfony\Bridge\Monolog\Logger;
@@ -57,6 +62,12 @@ class CommentController {
     protected $eventLogger;
 
 
+    /**
+     * @var URInator
+     */
+    protected $urinator;
+
+
 
     /**
      * @var FormFactory
@@ -65,6 +76,10 @@ class CommentController {
 
     public function setFormFactory(FormFactory $formFactory)    {
         $this->formFactory = $formFactory;
+    }
+
+    public function setURInator($urinator)  {
+        $this->urinator = $urinator;
     }
 
     public function __construct(CommentService $commentService, EntityService $entityService, AuthorService $authorService) {
@@ -237,22 +252,48 @@ class CommentController {
         try {
             $id = $request->get('id');
 
+            $contentType = RdfResponse::selectAcceptable($request->getAcceptableContentTypes());
+
+
             $comment = $this->commentService->getById($id);
             if (!$comment) {
                 throw new NotFoundHttpException('Comment is missing');
-
             }
 
-            $response = new JsonResponse([
-                'success' => true,
-                'id' => $id,
-                'author_uri' => $comment->getAuthorURI(),
-                'entity_uri' => $comment->getEntityURI(),
-                'entity_namespace' => $comment->getEntityNamespace(),
-                'comment_body' => $comment->getMessage(),
-                'date' => $comment->getCreationDate(),
-                'status' => $comment->getStatus()
-            ]);
+            if ($contentType === 'application/json')    {
+                $response = new JsonResponse([
+                    'success' => true,
+                    'id' => $id,
+                    'author_uri' => $comment->getAuthorURI(),
+                    'entity_uri' => $comment->getEntityURI(),
+                    'entity_namespace' => $comment->getEntityNamespace(),
+                    'comment_body' => $comment->getMessage(),
+                    'date' => $comment->getCreationDate(),
+                    'status' => $comment->getStatus()
+                ]);
+            }
+            else {
+
+                RdfNamespace::set('schema', 'http://schema.org/');
+                RdfNamespace::set('tal', 'http://semantic.talaka.by/ns/talaka.owl#');
+
+                $graph = new Graph();
+
+                $commentURI = $this->urinator->generateURI($comment);
+
+                $resource = $graph->resource($commentURI, 'schema:UserComments');
+                $resource->set('tal:commentId', new Literal($id, null, 'xsd:string'));
+                $resource->addResource('schema:author', $comment->getAuthorURI());
+                $resource->addResource('schema:discusses', $comment->getEntityURI());
+                $resource->addResource('schema:replyToUrl', $comment->getEntityURI());
+                $resource->set('schema:commentText', new Literal($comment->getMessage(), null, 'xsd:string'));
+                $resource->set('schema:commentTime', new Literal\DateTime($comment->getCreationDate()));
+                $resource->addResource('schema:eventStatus', $this->commentService->getCommentStatusSchemaCompatible($comment));
+
+
+                $response = new RdfResponse($graph, 200, $contentType);
+            }
+
         }
         catch(NotFoundHttpException $e)    {
             $response = new JsonResponse([
@@ -359,4 +400,4 @@ class CommentController {
 
 
 
-} 
+}
