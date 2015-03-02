@@ -25,7 +25,9 @@
         "symfony/dom-crawler": "3.0.*@dev",
         "euskadi31/opengraph": "dev-master",
         "soil/event-bundle": "dev-master",
-        "easyrdf/easyrdf": "dev-master"
+        "easyrdf/easyrdf": "dev-master",
+        "soil/discover-bundle": "dev-master"
+
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

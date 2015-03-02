@@ -114,6 +114,13 @@ soil_event:
     urinator_service: soil_comment.service.urinator
 
 
+soil_discover:
+    entities_map:
+        - Soil\DiscoverBundle\Entity\Agent
+        - Soil\DiscoverBundle\Entity\Comment
+        - Soil\DiscoverBundle\Entity\Generic
+
+
 parameters:
     soil_event_ontology_uri: http://semantic.talaka.by/ns/talaka.owl#
     soil_event_gearman_ip: 127.0.0.1

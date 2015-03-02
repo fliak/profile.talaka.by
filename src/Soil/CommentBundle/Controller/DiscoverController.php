@@ -16,6 +16,7 @@ use Soil\CommentBundle\Service\AuthorService;
 use Soil\CommentBundle\Service\CommentService;
 use Soil\CommentBundle\Service\EntityService;
 use Soil\CommentBundle\Service\Exception;
+use Soil\DiscoverBundle\Service\Resolver;
 use Soil\DiscoverBundle\Services\Discoverer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,7 @@ class DiscoverController {
     /**
      * @var Discoverer
      */
-    protected $discoverer;
+    protected $resolver;
 
     /**
      * @var EngineInterface
@@ -36,17 +37,17 @@ class DiscoverController {
     protected $templating;
 
 
-    public function __construct(Discoverer $discoverer, EngineInterface $templating) {
-        $this->discoverer = $discoverer;
+    public function __construct(Resolver $resolver, EngineInterface $templating) {
+        $this->resolver = $resolver;
         $this->templating = $templating;
     }
 
 
     public function discoverAction($entity_uri)    {
-        $this->discoverer->discover($entity_uri);
+        $this->resolver->getEntityForURI($entity_uri);
 
         return new Response($this->templating->render(
-            'SoilCommentBundle:Discover:show.html.twig', ['discoverer' => $this->discoverer]
+            'SoilCommentBundle:Discover:show.html.twig', ['discoverer' => $this->resolver]
         ));
     }
 

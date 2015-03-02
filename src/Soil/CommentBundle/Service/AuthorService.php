@@ -10,6 +10,7 @@ namespace Soil\CommentBundle\Service;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Soil\CommentBundle\Entity\Author;
+use Soil\DiscoverBundle\Service\Resolver;
 use Soil\DiscoverBundle\Services\Discoverer;
 
 class AuthorService {
@@ -24,14 +25,14 @@ class AuthorService {
     protected $validator;
 
     /**
-     * @var Discoverer
+     * @var Resolver
      */
-    protected $discoverer;
+    protected $resolver;
 
-    public function __construct($dm, $validator, Discoverer $discoverer)    {
+    public function __construct($dm, $validator, Resolver $resolver)    {
         $this->dm = $dm->getManager();
         $this->validator = $validator;
-        $this->discoverer = $discoverer;
+        $this->resolver = $resolver;
     }
 
     public function factory()   {
@@ -41,11 +42,12 @@ class AuthorService {
     }
 
     public function discover(Author $author)       {
-        $this->discoverer->discover($author->getAuthorURI());
-        $author->setAvatarURL($this->discoverer->getImage());
+        $agentEntity = $this->resolver->getEntityForURI($author->getAuthorURI(), 'Soil\DiscoverBundle\Entity\Agent');
 
-        $author->setName($this->discoverer->getProfileName());
-        $author->setSurname($this->discoverer->getProfileSurname());
+        $author->setAvatarURL($agentEntity->img);
+
+        $author->setName($agentEntity->firstName);
+        $author->setSurname($agentEntity->lastName);
 
     }
 

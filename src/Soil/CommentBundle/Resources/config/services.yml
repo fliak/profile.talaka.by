@@ -4,7 +4,7 @@ services:
 
     soil_comment.controller.discover_controller:
         class:     Soil\CommentBundle\Controller\DiscoverController
-        arguments: [@soil_disover.discoverer, @templating]
+        arguments: [@soil_discover.service.resolver, @templating]
 
     soil_comment.controller.comment_controller:
         class: Soil\CommentBundle\Controller\CommentController
@@ -34,7 +34,7 @@ services:
 
     soil_comment.service.author:
         class: Soil\CommentBundle\Service\AuthorService
-        arguments: [@doctrine_mongodb, @validator, @soil_disover.discoverer]
+        arguments: [@doctrine_mongodb, @validator, @soil_discover.service.resolver]
 
     soil_comment.service.urinator:
         class: Soil\CommentBundle\Service\URInator
