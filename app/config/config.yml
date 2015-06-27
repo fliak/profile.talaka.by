@@ -65,6 +65,7 @@ assetic:
 #        auto_mapping: true
 
 doctrine_mongodb:
+    auto_generate_hydrator_classes: true
     connections:
         default:
             server: mongodb://localhost:27017
@@ -77,6 +78,10 @@ doctrine_mongodb:
                 SoilCommentBundle:
                     type: annotation
                     prefix: Soil\CommentBundle\Entity
+                    dir: Entity
+                SoilAuthorityBundle:
+                    type: annotation
+                    prefix: Soil\AuthorityBundle\Entity
                     dir: Entity
 
 # Swiftmailer Configuration
@@ -100,6 +105,7 @@ soil_event:
             - { name: "SUBSCRIBE", value: "SubscribeEvent" }
             - { name: "COMPLETE", value: "CompleteEvent" }
             - { name: "COMMENT", value: "CommentEvent" }
+            - { name: "VOTE", value: "VoteEvent" }
 
 
     carrier_config:
@@ -116,9 +122,13 @@ soil_event:
 
 soil_discover:
     entities_map:
-        - Soil\DiscoverBundle\Entity\Agent
-        - Soil\DiscoverBundle\Entity\Comment
-        - Soil\DiscoverBundle\Entity\Generic
+      foaf:Person: Soil\DiscoverBundle\Entity\Agent
+      tal:TalakoshtCampaign: Soil\DiscoverBundle\Entity\TalakoshtCampaign
+      schema:Offer: Soil\DiscoverBundle\Entity\TalakoshtCampaign
+      schema:UserComments: Soil\DiscoverBundle\Entity\Comment
+      schema:ImageObject: Soil\DiscoverBundle\Entity\Schema\ImageObject
+
+
 
 
 parameters:

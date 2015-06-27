@@ -10,6 +10,7 @@ namespace Soil\CommentBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Soil\AuthorityBundle\Entity\VoteAggregatorInterface;
 use Soil\CommentBundle\Entity\Author;
 use Soil\CommentBundle\Entity\Comment;
 
@@ -19,7 +20,7 @@ use Soil\CommentBundle\Entity\Comment;
  * @ODM\Document(db="comments_talaka", collection="entity")
  *
  */
-class Entity {
+class Entity implements VoteAggregatorInterface {
 
     public function __construct()   {
         $this->userList = [];
@@ -90,6 +91,15 @@ class Entity {
      * )
      */
     protected $dirty_comments;
+
+    /**
+     * @var Votes
+     * @ODM\EmbedOne(
+     *    targetDocument="Votes"
+     * )
+     */
+    protected $votes;
+
 
     /**
      * @return int
@@ -297,6 +307,25 @@ class Entity {
     public function removeDirtyComment($comment)    {
         $this->dirty_comments->removeElement($comment);
     }
+
+    /**
+     * @return Votes
+     */
+    public function getVotes()
+    {
+        $this->votes = new Votes();
+
+        return $this->votes;
+    }
+
+    /**
+     * @param Votes $votes
+     */
+    public function setVotes($votes)
+    {
+        $this->votes = $votes;
+    }
+
 
 
 

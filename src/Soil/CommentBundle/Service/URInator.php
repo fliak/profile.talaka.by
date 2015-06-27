@@ -9,6 +9,7 @@
 namespace Soil\CommentBundle\Service;
 
 
+use Soil\AuthorityBundle\Entity\Vote;
 use Soil\CommentBundle\Entity\Comment;
 use Soilby\EventComponent\Service\UrinatorInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -24,6 +25,14 @@ class URInator implements UrinatorInterface {
         $this->router = $router;
     }
 
+    public function assemble($routeName, $params = [])  {
+        if (is_scalar($params)) {
+            $params = ['id' => $params];
+        }
+
+        return $this->router->generate($routeName, $params, true);
+    }
+
     public function generateURI($entity)    {
         if (is_scalar($entity)) {
             return $entity; //return string directly
@@ -31,9 +40,12 @@ class URInator implements UrinatorInterface {
 
         switch (true)   {
             case $entity instanceof Comment:
-                $uri = $this->router->generate('soil_comment_get', [
-                    'id' => $entity->getId()
-                ], true);
+                $uri = $this->assemble('soil_comment_get', $entity->getId());
+
+                break;
+
+            case $entity instanceof Vote:
+                $uri = $this->assemble('soil_authority_get', $entity->getId());
 
                 break;
 

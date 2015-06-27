@@ -10,6 +10,8 @@ namespace Soil\CommentBundle\Service;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Soil\CommentBundle\Entity\Author;
+use Soil\CommentBundle\Service\Exception\DiscoverException;
+use Soil\CommentBundle\Service\Exception\WrongAgentException;
 use Soil\DiscoverBundle\Service\Resolver;
 use Soil\DiscoverBundle\Services\Discoverer;
 
@@ -42,12 +44,19 @@ class AuthorService {
     }
 
     public function discover(Author $author)       {
-        $agentEntity = $this->resolver->getEntityForURI($author->getAuthorURI(), 'Soil\DiscoverBundle\Entity\Agent');
+        try {
+            $uri = $author->getAuthorURI();
+            $agentEntity = $this->resolver->getEntityForURI($uri, 'Soil\DiscoverBundle\Entity\Agent');
 
-        $author->setAvatarURL($agentEntity->img);
+        }
+        catch(\Exception $e)    {
+            throw new DiscoverException("Cannot discover entity`$uri`", $e);
+        }
 
-        $author->setName($agentEntity->firstName);
-        $author->setSurname($agentEntity->lastName);
+        $author->setAvatarURL((string)$agentEntity->getImg());
+
+        $author->setName((string)$agentEntity->getFirstName());
+        $author->setSurname((string)$agentEntity->getLastName());
 
     }
 
@@ -55,13 +64,42 @@ class AuthorService {
         $this->dm->persist($entity);
     }
 
-    public function getByURI($uri)  {
-        return $this->getRepository()->findOneBy([
+    public function getByURI($uri, $createIfNotExist = false)  {
+        $agent = $this->getRepository()->findOneBy([
             'author_uri' => $uri
         ]);
+
+        if (!$agent && $createIfNotExist) {
+            $agent = $this->factory();
+            $agent->setAuthorURI($uri);
+
+            try {
+                $this->discover($agent);
+            }
+            catch (DiscoverException $e)    {
+                throw new WrongAgentException("Provided agent URI cannot be discovered", $e);
+            }
+
+
+            $this->persist($agent);
+        }
+
+
+        return $agent;
     }
 
     public function getRepository()  {
         return $this->dm->getRepository('Soil\CommentBundle\Entity\Author');
+    }
+
+    public function getPublicRepresentation(Author $agent) {
+        $data = [
+            'id'      => $agent->getId(),
+            'avatar'  => $agent->getAvatarURL(),
+            'name'    => $agent->getName(),
+            'surname' => $agent->getSurname(),
+        ];
+
+        return $data;
     }
 } 

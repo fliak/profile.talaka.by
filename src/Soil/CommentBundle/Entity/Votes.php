@@ -10,6 +10,7 @@ namespace Soil\CommentBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Soil\AuthorityBundle\Entity\Vote;
 
 /**
  * Class Votes
@@ -20,27 +21,64 @@ class Votes {
 
     /**
      * @var int
-     * @ODM\Int
+     * @ODM\Integer(name="vote_value")
      */
-    protected $votesPositive;
+    protected $voteValue;
+
+    /**
+     * @var \DateTime
+     * @ODM\Date(name="last_voting_date")
+     */
+    protected $lastVotingDate;
 
     /**
      * @var int
-     * @ODM\Int
+     * @ODM\Integer(name="vote_count_per_day")
      */
-    protected $votesNegative;
+    protected $voteCountPerDay;
+
+    /**
+     * @var int
+     * @ODM\Integer(name="vote_count_total")
+     */
+    protected $voteCountTotal;
 
 
     /**
      * @var ArrayCollection
-     * @ODM\EmbedMany(
-     *   targetDocument="VoteHistoryEntry"
+     * @ODM\ReferenceMany(
+     *   targetDocument="Soil\AuthorityBundle\Entity\Vote",
+     *   simple="true"
      * )
      */
     protected $history;
 
     /**
-     * @return Array
+     * @var array
+     * @ODM\EmbedMany(
+     *      name="by_user_index",
+     *      targetDocument="Soil\AuthorityBundle\Entity\IndexElement",
+     *      strategy="set"
+     * )
+     */
+    protected $byUserIndex;
+
+
+    /**
+     * @var array
+     * @ODM\EmbedMany(
+     *      name="by_entity_index",
+     *      targetDocument="Soil\AuthorityBundle\Entity\IndexElement",
+     *      strategy="set"
+     * )
+     */
+    protected $byEntityIndex;
+
+
+
+
+    /**
+     * @return ArrayCollection
      */
     public function getHistory()
     {
@@ -58,65 +96,120 @@ class Votes {
     /**
      * @return int
      */
-    public function getVotesNegative()
+    public function getVoteValue()
     {
-        return $this->votesNegative;
+        return $this->voteValue;
     }
 
     /**
-     * @param int $votesNegative
+     * @param int $voteValue
      */
-    public function setVotesNegative($votesNegative)
+    public function setVoteValue($voteValue)
     {
-        $this->votesNegative = $votesNegative;
+        $this->voteValue = $voteValue;
+    }
+
+    public function addVote($voteIncrement) {
+        $this->voteValue += $voteIncrement;
+    }
+
+
+
+
+
+    public function __construct()   {
+        $this->voteValue = 0;
+
+        $this->history = new ArrayCollection();
+
+        $this->byUserIndex = new ArrayCollection();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastVotingDate()
+    {
+        return $this->lastVotingDate;
+    }
+
+    /**
+     * @param \DateTime $lastVotingDate
+     */
+    public function setLastVotingDate($lastVotingDate)
+    {
+        $this->lastVotingDate = $lastVotingDate;
     }
 
     /**
      * @return int
      */
-    public function getVotesPositive()
+    public function getVoteCountPerDay()
     {
-        return $this->votesPositive;
+        return $this->voteCountPerDay;
     }
 
     /**
-     * @param int $votesPositive
+     * @param int $voteCountPerDay
      */
-    public function setVotesPositive($votesPositive)
+    public function setVoteCountPerDay($voteCountPerDay)
     {
-        $this->votesPositive = $votesPositive;
+        $this->voteCountPerDay = $voteCountPerDay;
     }
 
-
-    public function addVote($user, $number) {
-        if ($number > 0)    {
-            $this->votesPositive += $number;
-        }
-        else    {
-            $this->votesNegative += abs($number);
-        }
-
-        $historyEntry = new VoteHistoryEntry();
-        $historyEntry->setUser($user);
-        $historyEntry->setVote($number);
-
-        $this->history->add($historyEntry);
+    /**
+     * @return int
+     */
+    public function getVoteCountTotal()
+    {
+        return $this->voteCountTotal;
     }
 
-    public function __construct()   {
-        $this->votesNegative = 0;
-        $this->votesPositive = 0;
-
-        $this->history = new ArrayCollection();
+    /**
+     * @param int $voteCountTotal
+     */
+    public function setVoteCountTotal($voteCountTotal)
+    {
+        $this->voteCountTotal = $voteCountTotal;
     }
 
-    public function userCanVote(Author $user)  {
-        return !$this->history->exists(function($key, $element) use($user) {
-            if ($element->getUser() === $user)  {
-                return true;
-            }
-        });
+    public function incrementVoteCount()    {
+        $this->voteCountPerDay++;
+        $this->voteCountTotal++;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getByUserIndex()
+    {
+        return $this->byUserIndex;
+    }
+
+    /**
+     * @param array $byUserIndex
+     */
+    public function setByUserIndex($byUserIndex)
+    {
+        $this->byUserIndex = $byUserIndex;
+    }
+
+    /**
+     * @return array
+     */
+    public function getByEntityIndex()
+    {
+        return $this->byEntityIndex;
+    }
+
+    /**
+     * @param array $byEntityIndex
+     */
+    public function setByEntityIndex($byEntityIndex)
+    {
+        $this->byEntityIndex = $byEntityIndex;
+    }
+
 
 
 } 

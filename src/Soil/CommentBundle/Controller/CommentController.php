@@ -98,6 +98,7 @@ class CommentController {
             }
             $requestContent = $request->getContent();
             $data = json_decode($requestContent, true);
+            if (!$data) throw new \Exception('Request malformed');
 
             $requiredFields = ['author_uri', 'entity_uri', 'message'];
             $missingFields = array_diff($requiredFields, array_keys($data));
@@ -113,21 +114,12 @@ class CommentController {
 
             $result = $this->commentService->isValid($comment);
 
-
             if (!$result) {
                 throw new IsNotValidException(
                     $this->commentService->getLastValidatorViolations(), 'Request malformed');
             }
 
-            $commentedEntity = $this->entityService->getByURI($comment->getEntityURI());
-
-            if (!$commentedEntity) {
-                $commentedEntity = $this->entityService->factory();
-                $commentedEntity->setEntityNamespace($comment->getEntityNamespace());
-                $commentedEntity->setEntityURI($comment->getEntityURI());
-
-                $this->entityService->persist($commentedEntity);
-            }
+            $commentedEntity = $this->entityService->getByURI($comment->getEntityURI(), true);
 
             $comment->setEntity($commentedEntity); //set entity back
             $commentedEntity->getComments()->add($comment); //make relation to comment
@@ -135,15 +127,7 @@ class CommentController {
             $commentedEntity->setLastCommentDate($comment->getCreationDate());
 
 
-            $commentAuthor = $this->authorService->getByURI($comment->getAuthorURI());
-
-            if (!$commentAuthor) {
-                $commentAuthor = $this->authorService->factory();
-                $commentAuthor->setAuthorURI($comment->getAuthorURI());
-                $this->authorService->discover($commentAuthor);
-
-                $this->authorService->persist($commentAuthor);
-            }
+            $commentAuthor = $this->authorService->getByURI($comment->getAuthorURI(), true);
 
             $comment->setAuthor($commentAuthor);
             $commentAuthor->getComments()->add($comment);
@@ -173,17 +157,28 @@ class CommentController {
 
             $this->commentService->getDM()->flush();
 
-            $this->eventLogger->raiseComment(
-                $comment,
-                $commentAuthor->getAuthorURI(),
-                $commentedEntity->getEntityURI()
-            );
-            $this->eventLogger->flush();
+            $debugMessage = null;
+
+            try {
+                $this->eventLogger->raiseComment(
+                    $comment,
+                    $commentAuthor->getAuthorURI(),
+                    $commentedEntity->getEntityURI()
+                );
+                $this->eventLogger->flush();
+            }
+            catch(\Exception $e)    {
+                $this->logger->addCritical('Problem with event logging:');
+                $this->logger->addCritical((string) $e);
+
+                $debugMessage = 'Problem with event logging!';
+            }
 
             return $this->answerJSON([
                 'success' => true,
                 'id' => $comment->getId(),
-                'model' => $this->commentService->getPublicRepresentation($comment)
+                'model' => $this->commentService->getPublicRepresentation($comment),
+//                'debug' => $debugMessage
             ]);
 
         }
@@ -191,14 +186,6 @@ class CommentController {
             return $this->answerJSON([
                 'success' => false,
                 'message' => $e->getViolationsAsArray()
-            ], 500);
-        }
-        catch (DownloadException $e)   {
-            return $this->answerJSON([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'content' => $e->getResponse()->getContent()
             ], 500);
         }
         catch (\Exception $e)   {

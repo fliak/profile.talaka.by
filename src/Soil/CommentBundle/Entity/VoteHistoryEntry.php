@@ -12,6 +12,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
  * Class VoteHistoryEntry
+ * @deprecated
  * @package Soil\CommentBundle\Entity
  * @ODM\EmbeddedDocument
  */

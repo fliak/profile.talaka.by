@@ -40,6 +40,11 @@ services:
         class: Soil\CommentBundle\Service\URInator
         arguments: [@router]
 
+    soil_comment.service.deurinator:
+        class: Soil\CommentBundle\Service\DeURInator
+        calls:
+          - [ setContainer, [@service_container]]
+
     soil_comment.form.comment_push:
             class: Soil\CommentBundle\Form\CommentPushForm
             tags:

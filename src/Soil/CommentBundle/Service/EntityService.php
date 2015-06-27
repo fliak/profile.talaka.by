@@ -10,8 +10,11 @@ namespace Soil\CommentBundle\Service;
 
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use EasyRdf\RdfNamespace;
+use Soil\CommentBundle\Entity\Comment;
 use Soil\CommentBundle\Entity\Entity;
 use Soil\CommentBundle\Service\Exception\AmbiguityException;
+use Soil\CommentBundle\Service\Exception\DiscoverException;
 use Soil\CommentBundle\Service\Exception\EntityMissing;
 
 class EntityService {
@@ -41,13 +44,23 @@ class EntityService {
     }
 
     /**
-     * @param $uri
+     * @param $uri string
+     * @param $createIfNotExist bool
      * @return Entity
      */
-    public function getByURI($uri)  {
-        return $this->getRepository()->findOneBy([
+    public function getByURI($uri, $createIfNotExist = false)  {
+        $entity = $this->getRepository()->findOneBy([
             'entity_uri' => $uri
         ]);
+
+        if (!$entity && $createIfNotExist) {
+            $entity = $this->factory();
+            $entity->setEntityURI($uri);
+
+            $this->persist($entity);
+        }
+
+        return $entity;
     }
 
     public function getRepository()  {
@@ -93,4 +106,4 @@ class EntityService {
 
         return array_key_exists('dirty_comments', $data) ? $data['dirty_comments'] : [];
     }
-} 
+}

@@ -11,6 +11,7 @@ namespace Soil\CommentBundle\Entity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Soil\AuthorityBundle\Entity\VoteAggregatorInterface;
 use Soil\CommentBundle\Entity\Comment;
 use Soil\CommentBundle\Entity\Entity;
 
@@ -19,7 +20,7 @@ use Soil\CommentBundle\Entity\Entity;
  * @package Soil\CommentBundle\Entity
  * @ODM\Document(db="comments_talaka", collection="authors")
  */
-class Author {
+class Author implements VoteAggregatorInterface {
 
 
     public function __construct()   {
@@ -44,6 +45,15 @@ class Author {
      * @ODM\String
      */
     protected $surname;
+
+
+    /**
+     * @var Votes
+     * @ODM\EmbedOne(
+     *    targetDocument="Votes"
+     * )
+     */
+    protected $votes;
 
 
     /**
@@ -212,6 +222,26 @@ class Author {
     public function setSurname($surname)
     {
         $this->surname = $surname;
+    }
+
+    /**
+     * @return Votes
+     */
+    public function getVotes()
+    {
+        if (!$this->votes)  {
+            $this->votes = new Votes(); //for old comments
+        }
+
+        return $this->votes;
+    }
+
+    /**
+     * @param Votes $votes
+     */
+    public function setVotes($votes)
+    {
+        $this->votes = $votes;
     }
 
 

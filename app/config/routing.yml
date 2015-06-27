@@ -6,4 +6,8 @@ soil_comment:
     resource: "@SoilCommentBundle/Resources/config/routing.yml"
     prefix:   /
 
+soil_authority:
+    resource: "@SoilAuthorityBundle/Resources/config/routing.yml"
+    prefix:   /authority/
+
 

@@ -10,6 +10,7 @@ namespace Soil\CommentBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Soil\AuthorityBundle\Entity\VoteAggregatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Soil\CommentBundle\Entity\Author;
 use Soil\CommentBundle\Entity\Entity;
@@ -19,7 +20,7 @@ use Soil\CommentBundle\Entity\Entity;
  * @package Soil\CommentBundle\Entity
  * @ODM\Document(db="comments_talaka", collection="comment")
  */
-class Comment {
+class Comment implements VoteAggregatorInterface {
 
     const COMMENT_STATUS_REMOVED = 'removed';
     const COMMENT_STATUS_PUBLIC = 'public';
@@ -29,7 +30,7 @@ class Comment {
     public function __construct()   {
         $this->log = new ArrayCollection();
         $this->children = new ArrayCollection();
-        $this->votes = new Votes();
+//        $this->votes = new Votes();
     }
 
     /**
