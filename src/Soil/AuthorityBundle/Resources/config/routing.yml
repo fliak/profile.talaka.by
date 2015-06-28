@@ -1,0 +1,17 @@
+soil_authority_alter:
+    path:     /alter
+    defaults: { _controller: soil_authority.controller.alter_controller:alterAction }
+
+
+soil_authority_get:
+    path: /get/{id}
+    defaults: { _controller: soil_authority.controller.index_controller:getAction }
+
+soil_authority_get_agent_stat:
+    path: /get-agent-stat/{uri}
+
+    defaults:
+        _controller: soil_authority.controller.index_controller:getAgentStatAction
+        uri: null
+    requirements:
+        uri: .+

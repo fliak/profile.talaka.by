@@ -212,7 +212,7 @@ class AlterController {
         catch (\Exception $e)   {
             return $this->answerJSON([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => [$e->getMessage()],
                 'trace' => $e->getTraceAsString()
             ], 500);
         }

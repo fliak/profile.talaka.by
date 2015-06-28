@@ -10,6 +10,10 @@ namespace Soil\CommentBundle\Controller\Exception;
 
 
 class IsNotValidException extends \Exception {
+
+    /**
+     * @var array
+     */
     protected $violations;
 
     public function __construct($violations, $message = 'Data invalid', $previous = null) {

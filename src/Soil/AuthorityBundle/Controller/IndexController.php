@@ -65,6 +65,43 @@ class IndexController {
 
     }
 
+    public function getAgentStatAction($uri, Request $request)    {
+        if ($request->isMethod(Request::METHOD_POST))   {
+            $uriSet = json_decode($request->getContent(), true);
+
+            if (!$uriSet || !is_array($uriSet)) throw new \Exception('Request malformed');
+        }
+        else    {
+            $uriSet = [$uri];
+        }
+
+        $response = [];
+
+        foreach ($uriSet as $anId => $uri)   {
+            if (!is_string($uri)) throw new \Exception('Request malformed. Please specify array of URI.');
+            $author = $this->authorService->getByURI($uri);
+
+            if ($author)    {
+                $voteValue = $author->getVotes()->getVoteValue();
+                $commentsCount = $author->getCommentsCount();
+            }
+            else    {
+                $voteValue = 0;
+                $commentsCount = 0;
+            }
+
+
+            $response[$anId] = [
+                'authority' => $voteValue,
+                'comments_count' => $commentsCount
+            ];
+        }
+
+        return new JsonResponse($response);
+
+
+    }
+
 
     public function getAction($id, Request $request)  {
         try {
@@ -102,7 +139,7 @@ class IndexController {
 
                 $resource->addLiteral('schema:reviewBody', $vote->getMessage());
 
-                $ratingNode = $graph->newBNode('schema:reviewRating');
+                $ratingNode = $graph->newBNode('schema:Rating');
                 $ratingNode->addLiteral('schema:bestRating', 1);
                 $ratingNode->addLiteral('schema:worstRating', -1);
                 $ratingNode->addLiteral('schema:ratingValue', $vote->getVote());
@@ -116,7 +153,7 @@ class IndexController {
                 $voter->addLiteral('foaf:lastName', $vote->getAgent()->getSurname());
                 $voter->addLiteral('foaf:img', $vote->getAgent()->getAvatarURL());
 
-                $resource->addLiteral('dateCreated', new Literal\DateTime($vote->getCreationDate()));
+                $resource->addLiteral('schema:dateCreated', new Literal\DateTime($vote->getCreationDate()));
 
                 $response = new RdfResponse($graph, 200, $contentType);
             }
@@ -159,7 +196,7 @@ class IndexController {
     /**
      * @param URInator $urinator
      */
-    public function setUrinator($urinator)
+    public function setURInator($urinator)
     {
         $this->urinator = $urinator;
     }

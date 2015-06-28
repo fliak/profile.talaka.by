@@ -1,0 +1,52 @@
+services:
+    soil_authority.controller.index_controller:
+        class: Soil\AuthorityBundle\Controller\IndexController
+        arguments:
+            - @soil_authority.service.vote
+            - @soil_comment.service.author
+        calls:
+            - [setURInator, [@soil_comment.service.urinator]]
+
+    soil_authority.controller.alter_controller:
+        class: Soil\AuthorityBundle\Controller\AlterController
+        arguments:
+            - @soil_authority.service.vote
+            - @soil_comment.service.deurinator
+        calls:
+            - [setEntityService, [@soil_comment.service.entity]]
+            - [setAuthorService, [@soil_comment.service.author]]
+            - [setCommentService, [@soil_comment.service.comment]]
+
+            - [setEventLogger, [@soil_event.service.event_logger]]
+            - [setURInator, [@soil_comment.service.urinator]]
+            - [setLogger, [@monolog.logger.endpoint]]
+
+            - [addRule, [@soil_authority.rule.bad_authority]]
+            - [addRule, [@soil_authority.rule.per_day_count_limit]]
+            - [addRule, [@soil_authority.rule.voting_for_itself_ban]]
+            - [addRule, [@soil_authority.rule.minimal_comments]]
+            - [addRule, [@soil_authority.rule.repeated_vote_limit]]
+
+    soil_authority.rule.bad_authority:
+        class: Soil\AuthorityBundle\Rules\BadAuthorityRule
+
+    soil_authority.rule.per_day_count_limit:
+        class: Soil\AuthorityBundle\Rules\PerDayCountLimitRule
+
+    soil_authority.rule.repeated_vote_limit:
+        class: Soil\AuthorityBundle\Rules\RepeatedVoteLimitRule
+
+    soil_authority.rule.minimal_comments:
+        class: Soil\AuthorityBundle\Rules\MinimalCommentsRule
+
+    soil_authority.rule.voting_for_itself_ban:
+        class: Soil\AuthorityBundle\Rules\VotingForItselfBanRule
+
+
+    soil_authority.service.vote:
+        class: Soil\AuthorityBundle\Service\VoteService
+        arguments: [@doctrine_mongodb, @validator]
+        calls:
+            - [setAgentService, [@soil_comment.service.author]]
+
+
