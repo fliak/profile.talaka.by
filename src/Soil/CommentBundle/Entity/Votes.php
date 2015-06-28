@@ -199,6 +199,9 @@ class Votes {
      */
     public function getByEntityIndex()
     {
+        if (!$this->byEntityIndex)  {
+            $this->byEntityIndex = new ArrayCollection();
+        }
         return $this->byEntityIndex;
     }
 

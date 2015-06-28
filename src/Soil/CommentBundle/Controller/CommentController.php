@@ -256,7 +256,8 @@ class CommentController {
                     'entity_namespace' => $comment->getEntityNamespace(),
                     'comment_body' => $comment->getMessage(),
                     'date' => $comment->getCreationDate(),
-                    'status' => $comment->getStatus()
+                    'status' => $comment->getStatus(),
+                    'authority' => $comment->getVotes()->getVoteValue()
                 ]);
             }
             else {
@@ -276,6 +277,7 @@ class CommentController {
                 $resource->set('schema:commentText', new Literal($comment->getMessage(), null, 'xsd:string'));
                 $resource->set('schema:commentTime', new Literal\DateTime($comment->getCreationDate()));
                 $resource->addResource('schema:eventStatus', $this->commentService->getCommentStatusSchemaCompatible($comment));
+                $resource->set('schema:rating', new Literal($comment->getVotes()->getVoteValue()));
 
 
                 $response = new RdfResponse($graph, 200, $contentType);

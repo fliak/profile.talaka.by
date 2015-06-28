@@ -18,7 +18,7 @@ use Soil\CommentBundle\Entity\Entity;
 /**
  * Class Comment
  * @package Soil\CommentBundle\Entity
- * @ODM\Document(db="comments_talaka", collection="comment")
+ * @ODM\Document(collection="comment")
  */
 class Comment implements VoteAggregatorInterface {
 

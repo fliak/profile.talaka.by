@@ -18,7 +18,7 @@ use Soil\CommentBundle\Entity\Author;
 /**
  * Class Vote
  * @package Soil\AuthorityBundle\Entity
- * @ODM\Document(db="comments_talaka", collection="vote")
+ * @ODM\Document(collection="vote")
  *
  */
 class Vote {

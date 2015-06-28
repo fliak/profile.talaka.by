@@ -22,7 +22,8 @@ class AppKernel extends Kernel
             new Soil\DiscoverBundle\SoilDiscoverBundle(),
             new \Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
             new \Soil\EventBundle\SoilEventBundle(),
-            new \Soil\AuthorityBundle\SoilAuthorityBundle()
+            new \Soil\AuthorityBundle\SoilAuthorityBundle(),
+            new \Soil\CORSRequestHandlerBundle\SoilCORSRequestHandlerBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -228,9 +228,7 @@ class CommentService {
             'message'          => $comment->getMessage(),
             'parent'           => $comment->getParent() ? $comment->getParent()->getId() : null,
             'children'         => $childSet,
-//            'votePositive'     => $comment->getVotes()->getVotesPositive(),
-//            'voteNegative'     => $comment->getVotes()->getVotesNegative(),
-//            'canVote'          => $comment->getVotes()->userCanVote($comment->getAuthor())
+            'vote_value'       => $comment->getVotes()->getVoteValue()
 
         ];
 

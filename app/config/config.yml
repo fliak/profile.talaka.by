@@ -70,7 +70,7 @@ doctrine_mongodb:
         default:
             server: mongodb://localhost:27017
             options: {}
-    default_database: comments_talaka
+    default_database: %mongo_database%
     document_managers:
         default:
             auto_mapping: true
@@ -136,6 +136,12 @@ parameters:
     soil_event_gearman_ip: 127.0.0.1
     soil_event_gearman_port: 4730
 
+
+soil_cors_request_handler:
+    eligible_routes:
+      - soil_authority_alter
+      - soil_authority_get
+      - soil_authority_get_agent_stat
 
 monolog:
     channels: ["endpoint"]

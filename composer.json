@@ -10,7 +10,6 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.6.*",
-        "doctrine/orm": "dev-master",
         "doctrine/doctrine-bundle": "dev-master",
         "twig/extensions": "~1.0",
         "symfony/assetic-bundle": "~2.3",
@@ -46,7 +45,6 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
         ],
         "post-update-cmd": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
