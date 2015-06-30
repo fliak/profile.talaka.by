@@ -59,14 +59,18 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
         }
 
         $diff = DateAndTime::getTimeAgo('now', $lastVotingDate);
-        if (DateAndTime::convertTimeTo($diff) >= $this->repeatedVotingFrequency) {
+        $hours = DateAndTime::convertTimeTo($diff);
+        if ($hours >= $this->repeatedVotingFrequency) {
             return true;
         }
 
         $this->message = 'You can not change the reputation of the same user so often';
         $this->lastErrorCode = 'repeated_vote_for_user_so_often';
 
-        throw new VoteRuleException($this->lastErrorCode, $this->message);
+        throw new VoteRuleException($this->lastErrorCode, $this->message, [
+            'repeated_voting_frequency' => $this->repeatedVotingFrequency,
+            'passed' => $hours
+        ]);
     }
 
     public function hit(Author $subject, Author $object, $relatedEntity = null)    {

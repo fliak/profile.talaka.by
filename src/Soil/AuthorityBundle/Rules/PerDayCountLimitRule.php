@@ -16,7 +16,7 @@ class PerDayCountLimitRule implements VoteRuleInterface {
 
     protected $message = 'Vote day limit is over';
 
-    protected $lastErrorCode = 'per_day_count_limit_rule';
+    protected $lastErrorCode = 'per_day_count_limit';
 
     /**
      * Period in hours
@@ -24,7 +24,7 @@ class PerDayCountLimitRule implements VoteRuleInterface {
      */
     protected $period = 24;
 
-    protected $voteCountPerDay = 3;
+    protected $voteCountPerPeriod = 3;
 
     public function check(Author $subject, Author $object, $relatedEntity = null)    {
 
@@ -40,11 +40,14 @@ class PerDayCountLimitRule implements VoteRuleInterface {
             return true;
         }
         else    {
-            if ($subject->getVotes()->getVoteCountPerDay() < $this->voteCountPerDay)    {
+            if ($subject->getVotes()->getVoteCountPerDay() < $this->voteCountPerPeriod)    {
                 return true;
             }
             else    {
-                throw new VoteRuleException($this->lastErrorCode, $this->message);
+                throw new VoteRuleException($this->lastErrorCode, $this->message, [
+                    'period' => $this->period,
+                    'vote_count_per_period' => $this->voteCountPerPeriod
+                ]);
             }
         }
 
@@ -53,7 +56,7 @@ class PerDayCountLimitRule implements VoteRuleInterface {
     public function hit(Author $subject, Author $object, $relatedEntity = null)    {
         $subject->getVotes()->incrementVoteCount();
         $subject->getVotes()->setLastVotingDate(new \DateTime());
-        if ($subject->getVotes()->getVoteCountPerDay() > $this->voteCountPerDay) {
+        if ($subject->getVotes()->getVoteCountPerDay() > $this->voteCountPerPeriod) {
             $subject->getVotes()->setVoteCountPerDay(0);
         }
 

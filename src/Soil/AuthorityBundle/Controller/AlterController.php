@@ -201,13 +201,14 @@ class AlterController {
         catch (IsNotValidException $e)   {
             return $this->answerJSON([
                 'success' => false,
-                'message' => $e->getViolationsAsArray()
+                'message' => $e->getViolationsAsArray(),
+                'error_code' => 'request_invalid'
             ], 500);
         }
         catch (VoteRuleException $e) {
             return $this->answerJSON([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => [$e->getMessage()],
                 'error_code' => $e->getErrorCode(),
                 'params' => $e->getParams()
             ], 500);
@@ -216,6 +217,7 @@ class AlterController {
             return $this->answerJSON([
                 'success' => false,
                 'message' => [$e->getMessage()],
+                'error_code' => 'unclassified_error',
                 'trace' => $e->getTraceAsString()
             ], 500);
         }

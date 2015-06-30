@@ -16,7 +16,7 @@ class MinimalCommentsRule implements VoteRuleInterface {
 
     protected $message = 'Voter need at least one comment on platform for voting.';
 
-    protected $lastErrorCode = 'minimal_comments_rule';
+    protected $lastErrorCode = 'minimal_comments';
 
     protected $minimalCommentsCount = 1;
 
@@ -25,7 +25,9 @@ class MinimalCommentsRule implements VoteRuleInterface {
         $pass = $subject->getCommentsCount() > 0;
 
         if (!$pass) {
-            throw new VoteRuleException($this->lastErrorCode, $this->message);
+            throw new VoteRuleException($this->lastErrorCode, $this->message, [
+                'minimal_comments_count' => $this->minimalCommentsCount
+            ]);
         }
 
         return true;

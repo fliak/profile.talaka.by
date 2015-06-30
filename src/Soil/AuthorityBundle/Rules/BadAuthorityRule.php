@@ -16,7 +16,7 @@ class BadAuthorityRule implements VoteRuleInterface {
 
     protected $message = "Your authority does not allow you to vote";
 
-    protected $lastErrorCode = 'bad_authority_rule';
+    protected $lastErrorCode = 'bad_authority';
 
     protected $minimalBannedAuthority = -10;
 
@@ -24,7 +24,9 @@ class BadAuthorityRule implements VoteRuleInterface {
 
         $pass = $subject->getVotes()->getVoteValue() > $this->minimalBannedAuthority;
         if (!$pass) {
-            throw new VoteRuleException($this->lastErrorCode, $this->message);
+            throw new VoteRuleException($this->lastErrorCode, $this->message, [
+                'minimal_banned_authority' => $this->minimalBannedAuthority
+            ]);
         }
 
         return true;

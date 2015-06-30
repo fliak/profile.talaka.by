@@ -14,7 +14,7 @@ use Soil\CommentBundle\Entity\Author;
 class VotingForItselfBanRule implements VoteRuleInterface {
 
     protected $message = "Agent can't vote for himself";
-    protected $lastErrorCode = 'voting_for_itself_ban_rule';
+    protected $lastErrorCode = 'voting_for_itself_ban';
 
     public function check(Author $subject, Author $object, $relatedEntity = null)    {
         $pass = $subject->getAuthorURI() !== $object->getAuthorURI();
