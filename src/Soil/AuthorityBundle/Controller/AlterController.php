@@ -12,6 +12,7 @@ namespace Soil\AuthorityBundle\Controller;
 use EasyRdf\RdfNamespace;
 use Monolog\Logger;
 use Soil\AuthorityBundle\Entity\VoteAggregatorInterface;
+use Soil\AuthorityBundle\Rules\VoteRuleException;
 use Soil\AuthorityBundle\Rules\VoteRuleInterface;
 use Soil\CommentBundle\Controller\Exception\IsNotValidException;
 use Soil\CommentBundle\Entity\Author;
@@ -140,14 +141,8 @@ class AlterController {
 
 
             foreach ($this->rules as $rule) {
-                if (!$rule->check($voteSubject, $voteObjectAgent, $voteObject))   {
-
-                    throw new \Exception("Vote forbidden by "
-                        . get_class($rule) . ' rule with message: '
-                        . $rule->getLastMessage());
-                }
+                $rule->check($voteSubject, $voteObjectAgent, $voteObject);
             }
-
 
             foreach ($this->rules as $rule) {
                 $rule->hit($voteSubject, $voteObjectAgent, $voteObject);
@@ -207,6 +202,14 @@ class AlterController {
             return $this->answerJSON([
                 'success' => false,
                 'message' => $e->getViolationsAsArray()
+            ], 500);
+        }
+        catch (VoteRuleException $e) {
+            return $this->answerJSON([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error_code' => $e->getErrorCode(),
+                'params' => $e->getParams()
             ], 500);
         }
         catch (\Exception $e)   {

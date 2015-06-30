@@ -16,11 +16,18 @@ class BadAuthorityRule implements VoteRuleInterface {
 
     protected $message = "Your authority does not allow you to vote";
 
+    protected $lastErrorCode = 'bad_authority_rule';
+
     protected $minimalBannedAuthority = -10;
 
     public function check(Author $subject, Author $object, $relatedEntity = null)    {
 
-        return $subject->getVotes()->getVoteValue() > $this->minimalBannedAuthority;
+        $pass = $subject->getVotes()->getVoteValue() > $this->minimalBannedAuthority;
+        if (!$pass) {
+            throw new VoteRuleException($this->lastErrorCode, $this->message);
+        }
+
+        return true;
     }
 
     public function hit(Author $subject, Author $object, $relatedEntity = null)    {
@@ -31,5 +38,13 @@ class BadAuthorityRule implements VoteRuleInterface {
         return $this->message;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getLastErrorCode()
+    {
+        return $this->lastErrorCode;
+    }
 
 }

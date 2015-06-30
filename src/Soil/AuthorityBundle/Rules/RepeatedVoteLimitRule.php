@@ -18,6 +18,9 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
 
     protected $message;
 
+    protected $lastErrorCode = 'repeated_vote_for_user_so_often';
+
+
     /**
      * @var int
      * In hours
@@ -32,7 +35,11 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
 
             if ($index->containsKey($relatedEntity->getId()))  {
                 $this->message = 'You can not change user reputation for one comment twice';
-                return false;
+                $this->lastErrorCode = 'repeated_vote_for_comment';
+
+
+                throw new VoteRuleException($this->lastErrorCode, $this->message);
+
             }
 
         }
@@ -57,8 +64,9 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
         }
 
         $this->message = 'You can not change the reputation of the same user so often';
+        $this->lastErrorCode = 'repeated_vote_for_user_so_often';
 
-        return false;
+        throw new VoteRuleException($this->lastErrorCode, $this->message);
     }
 
     public function hit(Author $subject, Author $object, $relatedEntity = null)    {
@@ -78,5 +86,13 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
         return $this->message;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getLastErrorCode()
+    {
+        return $this->lastErrorCode;
+    }
 
 }

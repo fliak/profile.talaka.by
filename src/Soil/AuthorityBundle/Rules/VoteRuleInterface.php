@@ -19,4 +19,10 @@ interface VoteRuleInterface {
 
     public function getLastMessage();
 
+
+    /**
+     * @return string
+     */
+    public function getLastErrorCode();
+
 } 

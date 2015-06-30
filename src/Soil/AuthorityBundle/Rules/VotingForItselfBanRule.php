@@ -13,9 +13,18 @@ use Soil\CommentBundle\Entity\Author;
 
 class VotingForItselfBanRule implements VoteRuleInterface {
 
+    protected $message = "Agent can't vote for himself";
+    protected $lastErrorCode = 'voting_for_itself_ban_rule';
 
     public function check(Author $subject, Author $object, $relatedEntity = null)    {
-        return $subject->getAuthorURI() !== $object->getAuthorURI();
+        $pass = $subject->getAuthorURI() !== $object->getAuthorURI();
+
+
+        if (!$pass) {
+            throw new VoteRuleException($this->lastErrorCode, $this->message);
+        }
+
+        return true;
     }
 
     public function hit(Author $subject, Author $object, $relatedEntity = null)    {
@@ -24,6 +33,15 @@ class VotingForItselfBanRule implements VoteRuleInterface {
 
 
     public function getLastMessage()    {
-        return "Agent can't vote for himself";
+        return $this->message;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getLastErrorCode()
+    {
+        return $this->lastErrorCode;
     }
 } 

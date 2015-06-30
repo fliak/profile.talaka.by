@@ -16,6 +16,8 @@ class PerDayCountLimitRule implements VoteRuleInterface {
 
     protected $message = 'Vote day limit is over';
 
+    protected $lastErrorCode = 'per_day_count_limit_rule';
+
     /**
      * Period in hours
      * @var int
@@ -42,7 +44,7 @@ class PerDayCountLimitRule implements VoteRuleInterface {
                 return true;
             }
             else    {
-                return false;
+                throw new VoteRuleException($this->lastErrorCode, $this->message);
             }
         }
 
@@ -61,5 +63,13 @@ class PerDayCountLimitRule implements VoteRuleInterface {
         return $this->message;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getLastErrorCode()
+    {
+        return $this->lastErrorCode;
+    }
 
 }
