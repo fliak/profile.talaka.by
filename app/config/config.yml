@@ -111,11 +111,14 @@ soil_event:
     carrier_config:
         output_rdf_format: ntriples
         queue_stream_name: talaka_event
-        carrier_service: soil_event.service.gearman_client
+        carrier_service: %soil_event_carrier_service%
 
     gearman:
         serverIP: %soil_event_gearman_ip%
         serverPort: %soil_event_gearman_port%
+        endpoint_url: %soil_event_gearman_http_endpoint_url%
+
+
 
     urinator_service: soil_comment.service.urinator
 

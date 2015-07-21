@@ -159,14 +159,17 @@ class AlterController {
 
                 $voteObject->getVotes()->addVote($vote->getVote());
                 $voteObject->getVotes()->getHistory()->add($vote);
+                $voteObjectValue = $voteObject->getVotes()->getVoteValue();
             }
             else    {
                 $vote->setObject($voteObjectAgent);
+                $voteObjectValue = null;
             }
 
             $voteObjectAgent->getVotes()->addVote($vote->getVote());
             $voteObjectAgent->getVotes()->getHistory()->add($vote);
-
+            $voteAgentValue = $voteObjectAgent->getVotes()->getVoteValue();
+            if (is_null($voteObjectValue)) $voteObjectValue = $voteAgentValue;
 
 
             $this->voteService->persist($vote);
@@ -194,7 +197,9 @@ class AlterController {
             return $this->answerJSON([
                 'success' => true,
                 'id' => $vote->getId(),
-                'debug' => $debugMessage
+                'debug' => $debugMessage,
+                'vote_object_value' => $voteObjectValue,
+                'vote_agent_value' => $voteAgentValue
             ]);
 
         }

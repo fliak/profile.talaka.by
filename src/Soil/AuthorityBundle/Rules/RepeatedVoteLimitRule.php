@@ -26,7 +26,7 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
      * In hours
      *
      */
-    protected $repeatedVotingFrequency = 72;
+    protected $repeatedVotingFrequency = 24;
 
     public function check(Author $subject, Author $object, $relatedEntity = null)    {
 
@@ -69,7 +69,7 @@ class RepeatedVoteLimitRule implements VoteRuleInterface {
 
         throw new VoteRuleException($this->lastErrorCode, $this->message, [
             'repeated_voting_frequency' => $this->repeatedVotingFrequency,
-            'passed' => $hours
+            'passed' => round($hours, 2)
         ]);
     }
 

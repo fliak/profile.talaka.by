@@ -163,7 +163,8 @@ class CommentController {
                 $this->eventLogger->raiseComment(
                     $comment,
                     $commentAuthor->getAuthorURI(),
-                    $commentedEntity->getEntityURI()
+                    $commentedEntity->getEntityURI(),
+                    $comment->getParent()
                 );
                 $this->eventLogger->flush();
             }

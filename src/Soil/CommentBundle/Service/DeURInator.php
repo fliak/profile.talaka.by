@@ -31,21 +31,22 @@ class DeURInator implements ContainerAwareInterface {
 
     public function parseUri($uri) {
         $iri = RdfNamespace::shorten($uri);
+
         if (!$iri)    return null;
 
         $colonPos = strpos($iri, ':');
         $namespace = substr($iri, 0, $colonPos);
         $uniquePart = substr($iri, $colonPos + 1);
 
-        switch($namespace)    {
-            case 'talcom':
+        switch(true)    {
+            case strpos($namespace, 'talcom') === 0:
                 return [
                     'type' => $namespace,
                     'class' => Comment::class,
                     'id' => $uniquePart
                 ];
 
-            case 'talagent':
+            case strpos($namespace, 'talagent') === 0:
                 return [
                     'type' => $namespace,
                     'class' => Author::class,
@@ -58,7 +59,6 @@ class DeURInator implements ContainerAwareInterface {
                     'class' => null,
                     'id' => $uniquePart
                 ];
-
         }
     }
 

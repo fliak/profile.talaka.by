@@ -66,39 +66,48 @@ class IndexController {
     }
 
     public function getAgentStatAction($uri, Request $request)    {
-        if ($request->isMethod(Request::METHOD_POST))   {
-            $uriSet = json_decode($request->getContent(), true);
+        try {
+            if ($request->isMethod(Request::METHOD_POST)) {
+                $uriSet = json_decode($request->getContent(), true);
 
-            if (!$uriSet || !is_array($uriSet)) throw new \Exception('Request malformed');
-        }
-        else    {
-            $uriSet = [$uri];
-        }
-
-        $response = [];
-
-        foreach ($uriSet as $anId => $uri)   {
-            if (!is_string($uri)) throw new \Exception('Request malformed. Please specify array of URI.');
-            $author = $this->authorService->getByURI($uri);
-
-            if ($author)    {
-                $voteValue = $author->getVotes()->getVoteValue();
-                $commentsCount = $author->getCommentsCount();
-            }
-            else    {
-                $voteValue = 0;
-                $commentsCount = 0;
+                if (!$uriSet || !is_array($uriSet)) throw new \Exception('Request malformed');
+            } else {
+                $uriSet = [$uri];
             }
 
+            $response = [];
 
-            $response[$anId] = [
-                'authority' => $voteValue,
-                'comments_count' => $commentsCount
-            ];
+            foreach ($uriSet as $anId => $uri) {
+                if (!is_string($uri)) throw new \Exception('Request malformed. Please specify array of URI.');
+                $author = $this->authorService->getByURI($uri);
+
+                if ($author) {
+                    $voteValue = $author->getVotes()->getVoteValue();
+                    $commentsCount = $author->getCommentsCount();
+                } else {
+                    $voteValue = 0;
+                    $commentsCount = 0;
+                }
+
+
+                $response[$anId] = [
+                    'authority' => $voteValue,
+                    'comments_count' => $commentsCount
+                ];
+            }
+
+            $response = new JsonResponse($response);
+
         }
+        catch(\Exception $e)    {
+                $response = new JsonResponse([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+                $response->setStatusCode(500);
+            }
 
-        return new JsonResponse($response);
-
+        return $response;
 
     }
 
