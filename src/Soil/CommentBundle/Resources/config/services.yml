@@ -60,3 +60,12 @@ services:
             - @soil_comment.service.author
         calls:
             - [setCorsController, [@soil_comment.controller.cors_controller]]
+
+
+    soil_comment.command.update_comments:
+        class: Soil\CommentBundle\Command\UpdateCommentsCommand
+        arguments: [@doctrine.odm.mongodb.document_manager]
+        calls:
+            - [setEventLogger, [@soil_event.service.event_logger]]
+        tags:
+            - { name: console.command }

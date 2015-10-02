@@ -12,6 +12,7 @@ class SoilCommentBundle extends Bundle
         parent::boot();
 
         $namespaces = $this->container->getParameter('semantic_namespaces');
+
         foreach ($namespaces as $namespace => $uri) {
             RdfNamespace::set($namespace, $uri);
         }

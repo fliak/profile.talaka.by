@@ -22,7 +22,6 @@ use Soil\CommentBundle\Service\CommentService;
 use Soil\CommentBundle\Service\EntityService;
 use Soil\CommentBundle\Service\Exception;
 use Soil\CommentBundle\Service\URInator;
-use Soil\DiscoverBundle\Services\Exception\DownloadException;
 use Soilby\EventComponent\Service\EventLogger;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\Form\FormFactory;
@@ -96,6 +95,7 @@ class CommentController {
             if ($request->isMethod('OPTIONS'))  {
                 return $this->corsController->optionsAction();
             }
+
             $requestContent = $request->getContent();
             $data = json_decode($requestContent, true);
             if (!$data) throw new \Exception('Request malformed');
@@ -106,6 +106,7 @@ class CommentController {
                 $missingFieldsString = implode(', ', $missingFields);
                 throw new \Exception("Fields `$missingFieldsString` is required");
             }
+
 
             $comment = $this->commentService->factory();
 
@@ -179,7 +180,7 @@ class CommentController {
                 'success' => true,
                 'id' => $comment->getId(),
                 'model' => $this->commentService->getPublicRepresentation($comment),
-//                'debug' => $debugMessage
+                'debug' => $debugMessage
             ]);
 
         }
@@ -193,7 +194,7 @@ class CommentController {
             return $this->answerJSON([
                 'success' => false,
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'debug' => (string)$e
             ], 500);
         }
     }
@@ -280,6 +281,13 @@ class CommentController {
                 $resource->addResource('schema:eventStatus', $this->commentService->getCommentStatusSchemaCompatible($comment));
                 $resource->set('schema:rating', new Literal($comment->getVotes()->getVoteValue()));
 
+                $authorEntity = $comment->getAuthor();
+                $author = $graph->resource($comment->getAuthorURI(), 'schema:author');
+                $author->addLiteral('foaf:firstName', $authorEntity->getName());
+                $author->addLiteral('foaf:lastName', $authorEntity->getSurname());
+                $author->addLiteral('foaf:img', $authorEntity->getAvatarURL());
+
+
 
                 $response = new RdfResponse($graph, 200, $contentType);
             }
@@ -344,7 +352,6 @@ class CommentController {
             foreach ($comments as $comment) {
                 $dataSet[] = $this->commentService->getPublicRepresentation($comment);
             }
-
 
             $response = new JsonResponse([
                 'success' => true,

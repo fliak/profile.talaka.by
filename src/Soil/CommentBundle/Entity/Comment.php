@@ -155,6 +155,12 @@ class Comment implements VoteAggregatorInterface {
     protected $creationDate;
 
     /**
+     * @var bool
+     * @ODM\Boolean
+     */
+    protected $migration;
+
+    /**
      * @return string
      */
     public function getId()
@@ -414,6 +420,26 @@ class Comment implements VoteAggregatorInterface {
     {
         $this->votes = $votes;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isMigration()
+    {
+        return $this->migration;
+    }
+
+    /**
+     * @param boolean $migration
+     */
+    public function setMigration($migration)
+    {
+        $this->migration = $migration;
+    }
+
+
+
+
 
 
 

@@ -10,4 +10,8 @@ soil_authority:
     resource: "@SoilAuthorityBundle/Resources/config/routing.yml"
     prefix:   /authority/
 
+soil_user_track:
+    resource: "@SoilUserTrackBundle/Resources/config/routing.yml"
+    prefix:   /
+
 

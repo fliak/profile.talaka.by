@@ -26,7 +26,8 @@
         "soil/event-bundle": "dev-master",
         "easyrdf/easyrdf": "dev-master",
         "soil/discover-bundle": "dev-master",
-        "soil/cors-request-handler-bundle": "dev-master"
+        "soil/cors-request-handler-bundle": "dev-master",
+        "soil/user-track-bundle": "dev-master"
 
     },
     "require-dev": {

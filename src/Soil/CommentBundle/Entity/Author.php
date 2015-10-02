@@ -90,6 +90,13 @@ class Author implements VoteAggregatorInterface {
     protected $lastCommentDate;
 
     /**
+     * @var \DateTime
+     * @ODM\Date(name="last_discover_date")
+     */
+    protected $lastDiscoverDate;
+
+
+    /**
      * @return string
      */
     public function getAuthorURI()
@@ -243,6 +250,23 @@ class Author implements VoteAggregatorInterface {
     {
         $this->votes = $votes;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastDiscoverDate()
+    {
+        return $this->lastDiscoverDate;
+    }
+
+    /**
+     * @param \DateTime $lastDiscoverDate
+     */
+    public function setLastDiscoverDate($lastDiscoverDate)
+    {
+        $this->lastDiscoverDate = $lastDiscoverDate;
+    }
+
 
 
 

@@ -83,6 +83,10 @@ doctrine_mongodb:
                     type: annotation
                     prefix: Soil\AuthorityBundle\Entity
                     dir: Entity
+                SoilUserTrackBundle:
+                    type: annotation
+                    prefix: Soil\UserTrackBundle\Entity
+                    dir: Entity
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -110,7 +114,7 @@ soil_event:
 
     carrier_config:
         output_rdf_format: ntriples
-        queue_stream_name: talaka_event
+        queue_stream_name: %queue_stream_name%
         carrier_service: %soil_event_carrier_service%
 
     gearman:

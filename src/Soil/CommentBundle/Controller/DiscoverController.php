@@ -17,7 +17,6 @@ use Soil\CommentBundle\Service\CommentService;
 use Soil\CommentBundle\Service\EntityService;
 use Soil\CommentBundle\Service\Exception;
 use Soil\DiscoverBundle\Service\Resolver;
-use Soil\DiscoverBundle\Services\Discoverer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

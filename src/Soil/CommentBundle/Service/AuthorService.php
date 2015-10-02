@@ -13,7 +13,6 @@ use Soil\CommentBundle\Entity\Author;
 use Soil\CommentBundle\Service\Exception\DiscoverException;
 use Soil\CommentBundle\Service\Exception\WrongAgentException;
 use Soil\DiscoverBundle\Service\Resolver;
-use Soil\DiscoverBundle\Services\Discoverer;
 
 class AuthorService {
     /**
@@ -57,6 +56,7 @@ class AuthorService {
 
         $author->setName((string)$agentEntity->getFirstName());
         $author->setSurname((string)$agentEntity->getLastName());
+        $author->setLastDiscoverDate(new \DateTime());
 
     }
 
@@ -69,20 +69,32 @@ class AuthorService {
             'author_uri' => $uri
         ]);
 
-        if (!$agent && $createIfNotExist) {
-            $agent = $this->factory();
-            $agent->setAuthorURI($uri);
+        if (!$agent)    {
+            if ($createIfNotExist) {
+                $agent = $this->factory();
+                $agent->setAuthorURI($uri);
 
+                $this->persist($agent);
+            }
+            else    {
+                return $agent;
+            }
+        }
+
+        $lastDiscoverDate = $agent->getLastDiscoverDate();
+//604800 -week
+//86400 -day
+        if (!$lastDiscoverDate || (time() - $lastDiscoverDate->getTimestamp() > 86400))    {
             try {
                 $this->discover($agent);
             }
             catch (DiscoverException $e)    {
                 throw new WrongAgentException("Provided agent URI cannot be discovered", $e);
             }
-
-
-            $this->persist($agent);
         }
+
+
+
 
 
         return $agent;

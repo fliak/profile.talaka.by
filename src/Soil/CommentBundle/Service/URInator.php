@@ -25,6 +25,16 @@ class URInator implements UrinatorInterface {
         $this->router = $router;
     }
 
+    /**
+     * @return Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+
+
     public function assemble($routeName, $params = [])  {
         if (is_scalar($params)) {
             $params = ['id' => $params];

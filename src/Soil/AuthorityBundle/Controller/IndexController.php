@@ -19,7 +19,6 @@ use Soil\CommentBundle\Response\RdfResponse;
 use Soil\CommentBundle\Service\AuthorService;
 use Soil\CommentBundle\Service\URInator;
 use Soil\AuthorityBundle\Service\VoteService;
-use Soil\DiscoverBundle\Services\Exception\DownloadException;
 use Soilby\EventComponent\Service\EventLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
