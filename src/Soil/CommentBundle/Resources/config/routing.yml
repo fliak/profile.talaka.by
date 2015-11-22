@@ -16,7 +16,7 @@ soil_comment_push:
 soil_comment_remove:
     path: /comment/{id}
     defaults: { _controller: soil_comment.controller.comment_controller:removeAction }
-    methods: [DELETE]
+    methods: [DELETE, OPTIONS]
 
 
 soil_comment_edit:

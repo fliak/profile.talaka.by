@@ -365,7 +365,7 @@ class Comment implements VoteAggregatorInterface {
     }
 
     public function removeChildren($children)   {
-        $this->children->remove($children);
+        $this->children->removeElement($children);
     }
 
 

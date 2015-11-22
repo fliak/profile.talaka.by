@@ -17,10 +17,10 @@ class CORSController {
         $response = new Response();
         $response->headers->add([
             'Access-Control-Allow-Origin' => '*',
-            'Access-Control-Allow-Methods' => 'GET, POST, PUT',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE',
             'Content-Type' => 'text/html; charset=utf-8',
             'Access-Control-Max-Age' => 10,
-            'Access-Control-Allow-Headers' => 'Content-Type, Access'
+            'Access-Control-Allow-Headers' => 'Content-Type, Access, Accept'
         ]);
 
         return $response;

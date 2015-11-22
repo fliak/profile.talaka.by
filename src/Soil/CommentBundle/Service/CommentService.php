@@ -118,7 +118,7 @@ class CommentService {
         //check for children comments.
         $childrenCommentsCount = $comment->getChildren()->count();
         if ($childrenCommentsCount > 0)   {
-            throw new DeleteForbiddenException("Comment has $childrenCommentsCount so cannot be removed");
+            throw new DeleteForbiddenException("Comment has $childrenCommentsCount child comment so cannot be removed");
         }
 
         //remove from children list of parent comment

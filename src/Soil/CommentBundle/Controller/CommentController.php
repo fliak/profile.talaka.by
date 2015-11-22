@@ -210,6 +210,10 @@ class CommentController {
 
     public function removeAction(Request $request)   {
         try {
+            if ($request->isMethod('OPTIONS'))  {
+                return $this->corsController->optionsAction();
+            }
+
             $id = $request->get('id');
 
             $body = $request->getContent();
@@ -224,15 +228,16 @@ class CommentController {
 
             $this->commentService->getDM()->flush();
 
-            return new JsonResponse([
+            return $this->answerJSON([
                 'success' => true
             ]);
         }
         catch(\Exception $e)    {
-            return new JsonResponse([
+            return $this->answerJSON([
                 'success' => false,
-                'message' => $e->getMessage()
-            ]);
+                'message' => $e->getMessage(),
+                'debug' => (string) $e
+            ], 500);
         }
 
     }
