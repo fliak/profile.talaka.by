@@ -76,3 +76,10 @@ services:
             - [setEventLogger, [@soil_event.service.event_logger]]
         tags:
             - { name: console.command }
+
+    soil_comment.command.rebuild_authors:
+        class: Soil\CommentBundle\Command\RebuildAuthorsCommand
+        arguments: [@soil_comment.service.author]
+        calls:
+        tags:
+            - { name: console.command }
