@@ -46,8 +46,15 @@ class RebuildAuthorsCommand extends Command  {
             $output->writeln(count($authors) . ' authors to process');
 
             foreach ($authors as $author) {
-                $this->authorService->discover($author);
-                $output->writeln($author->getId() . ' ..done');
+                try {
+                    $this->authorService->discover($author);
+                    $output->writeln($author->getId() . ' ..done');
+                }
+                catch(\Exception $e)    {
+                    $output->writeln('Problem with ' . $author->getAuthorURI());
+                    $output->writeln(get_class($e) . ' ' . $e->getMessage());
+                }
+
             }
 
             $this->authorService->getRepository()->getDocumentManager()->flush();
