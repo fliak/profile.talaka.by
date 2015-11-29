@@ -55,3 +55,8 @@ soil_comment_vote:
     path: /comment/vote
     defaults: { _controller: soil_comment.controller.vote_controller:voteAction, include_non_public: true }
     methods: [POST, OPTIONS]
+
+soil_update_author:
+    path: /update/author
+    defaults: { _controller: soil_comment.controller.update_controller:updateAuthorAction }
+    methods: [POST]

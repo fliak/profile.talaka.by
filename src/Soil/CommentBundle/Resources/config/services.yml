@@ -20,6 +20,13 @@ services:
             - [setLogger, [@monolog.logger.endpoint]]
 
 
+    soil_comment.controller.update_controller:
+        class: Soil\CommentBundle\Controller\UpdateController
+        arguments:
+            - @soil_comment.service.author
+        calls:
+            - [setLogger, [@monolog.logger]]
+
 
     soil_comment.service.comment:
         class: Soil\CommentBundle\Service\CommentService
