@@ -27,7 +27,7 @@ soil_comment_edit:
 soil_comment_public_index:
     path: /comment/entity/{entity_uri}
     defaults: { _controller: soil_comment.controller.comment_controller:indexAction, include_non_public: false }
-    methods: [GET]
+    methods: [GET, OPTIONS]
     requirements:
         entity_uri: .+
 

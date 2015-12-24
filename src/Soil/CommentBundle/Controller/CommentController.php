@@ -93,7 +93,7 @@ class CommentController {
     public function pushAction(Request $request)   {
         try {
             if ($request->isMethod('OPTIONS'))  {
-                return $this->corsController->optionsAction();
+                return $this->corsController->optionsAction($request);
             }
 
             $requestContent = $request->getContent();

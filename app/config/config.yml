@@ -149,6 +149,7 @@ soil_cors_request_handler:
       - soil_authority_alter
       - soil_authority_get
       - soil_authority_get_agent_stat
+      - soil_comment_public_index
 
 monolog:
     channels: ["endpoint"]
